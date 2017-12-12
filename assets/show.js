@@ -13,17 +13,25 @@ var database = firebase.database();
 
 database.ref('/實施主軸').once('value').then(function(snapshot) {
     snapshot.forEach(function(snap) {
-        $('#report_table tr:last').after('<tr><td colspan = "6" align = "center" bgcolor = "F2FFFF">'+ snap.val() +'</td></tr>')
+        $('#show_select').append ("<div class = 'ui checkbox'><input type = 'checkbox' checked = ''><label>" + snap.val() + "</label></div><br>")
+        $('#report_table tr:last').after('<tr id = "row' + snap.val() + '"><td colspan = "6" align = "center" bgcolor = "F2FFFF">'+ snap.val() +'</td></tr>')
     })
 
+    $('.checkbox').checkbox({
+        onChecked: function() {
+            $('#row'+ $(this.nextSibling.firstChild)[0].textContent +'').show()
+        },
+        onUnchecked: function() {
+            $('#row'+ $(this.nextSibling.firstChild)[0].textContent +'').hide()
+        }
+    })
 })
-
-
 
 database.ref('/報表').once('value').then (
     function(snapshot) {
         snapshot.forEach(function(snap) {
-            $('#report_table tr:contains("'+ snap.val()['實施主軸'] +'")').after('<tr><td>'+ snap.val()['建檔日期'] +'</td><td>'+ snap.val()['請購編號'] +'</td><td>'+ snap.val()['請購類別'] +'</td><td>'+ snap.val()['請購項目'] +'</td><td>'+ snap.val()['請購金額'] +'</td><td>'+ snap.val()['傳票號碼'] +'</td></tr>')
+            $('#report_table tr:contains("'+ snap.val()['實施主軸'] +'")').after('<tr id = "row'+ snap.val()['實施主軸'] +'"><td>'+ snap.val()['建檔日期'] +'</td><td>'+ snap.val()['請購編號'] +'</td><td>'+ snap.val()['請購類別'] +'</td><td>'+ snap.val()['請購項目'] +'</td><td>'+ snap.val()['請購金額'] +'</td><td>'+ snap.val()['傳票號碼'] +'</td></tr>')
         })
+        $('#load_show').hide()
     }
 )

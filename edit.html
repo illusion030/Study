@@ -9,6 +9,11 @@
         <script src = "https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
     </head>
     <body>
+
+        <div class = "ui inverted active dimmer" id = "load_edit">
+            <div class = "ui indeterminate text loader"> Preparing files </div>
+        </div>
+
         <table id = "report_table" border="1" class = "ui celled table" >
             <tr>
                 <th> 建檔日期 </th>
@@ -20,6 +25,42 @@
                 <th> 傳票號碼 </th>
             </tr>
         </table>
+        
+        <button id = "edit_save" class = "medium ui button"> edit </button>
+        
+        <div class = "ui modal" id = "check_edit">
+            <i class = "close icon"></i>
+            <div class = "ui icon header">
+                <i class = "edit icon"></i>
+                Edit message
+            </div>
+            <div class = "actions">
+                <div class = "ui green basic ok button">
+                    <i class = "checkmark icon"></i>
+                    Yes
+                </div>
+                <div class = "ui red cancel button">
+                    <i class = "remove icon"></i>
+                    No
+                </div>
+            </div>
+        </div>
+        
+        <div class = "ui modal" id = "success">
+            <i class = "close icon"></i>
+            <div class = "ui icon header">
+                <i class = "checkmark icon"></i>
+                Success
+            </div>
+        </div>
+        
+        <div class = "ui modal" id = "no_change">
+            <i class = "close icon"></i>
+            <div class = "ui icon header">
+                <i class = "info icon"></i>
+                Nothing to update
+            </div>
+        </div>
         <script src = "./assets/edit.js"></script>
     </body>
 </HTML>

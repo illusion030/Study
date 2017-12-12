@@ -9,16 +9,26 @@
         <script src = "https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
     </head>
     <body>
-        <table id = "report_table" border = "1" width = "1200px" class = "ui celled table">
-            <tr>
-                <th> 建檔日期 </th>
-                <th> 請購編號 </th>
-                <th> 請購類別 </th>
-                <th> 請購項目 </th>
-                <th> 請購金額 </th>
-                <th> 傳票號碼 </th>
-            </tr>
-        </table>
+
+        <div class = "ui inverted active dimmer" id = "load_show">
+            <div class = "ui indeterminate text loader"> Preparing files </div>
+        </div>
+
+        <div class = "ui grid">
+            <div class = "four wide column" id = "show_select"></div>
+            <div class = "twelve wide column">
+                <table id = "report_table" border = "1" width = "1200px" class = "ui celled table">
+                    <tr>
+                        <th> 建檔日期 </th>
+                        <th> 請購編號 </th>
+                        <th> 請購類別 </th>
+                        <th> 請購項目 </th>
+                        <th> 請購金額 </th>
+                        <th> 傳票號碼 </th>
+                    </tr>
+                </table>
+            </div>
+        </div>
         <script src = "./assets/show.js"></script>
     </body>
 </HTML>

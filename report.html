@@ -12,33 +12,77 @@
         </style>
     </head>
     <body>
+        <div class = "ui inverted active dimmer" id = "load_report">
+            <div class = "ui indeterminate text loader"> Preparing files </div>
+        </div>
         <form id = "report_form" class = "ui form">
-        <label class = "ui label"> 建檔日期: </label>
-        <input type = "text" id = "report_date">
-        <br>
-        <label class = "ui label"> 請購編號: </label>
-        <input type = "text" id = "buy_num">
-        <br>
-        <label class = "ui label"> 實施主軸: </label>
-        <select id = "use_title">
-        </select>
-        <br>
-        <label class = "ui label"> 請購類別: </label>
-        <select id = "buy_type">
-        </select>
-        <br>
-        <label class = "ui label"> 請購項目: </label>
-        <input type = "text" id = "buy_name">
-        <br>
-        <label class = "ui label"> 請購金額: </label>
-        <input type = "text" id = "buy_money">
-        <br>
-        <label class = "ui label"> 傳票號碼: </label>
-        <input type = "text" id = "ticket_num">
-        <br>
-        <br>
-        <button id = "save_report" class = "ui button"> Save </button>
-        
+            <label class = "ui label"> 建檔日期: </label>
+            <input type = "text" id = "report_date">
+            <br>
+            <label class = "ui label"> 請購編號: </label>
+            <input type = "text" id = "buy_num">
+            <br>
+            <label class = "ui label"> 實施主軸: </label>
+            <div class = "ui fluid selection dropdown" id = "use_title">
+                <input type = "hidden" id = "use">
+                <i class = "dropdown icon"></i>
+                <div class = "default text"> Select </div>
+                <div class = "menu">
+                </div>
+            </div>
+            <label class = "ui label"> 請購類別: </label>
+            <div class = "ui fluid selection dropdown" id = "buy_type">
+                <input type = "hidden" id = "buy">
+                <i class = "dropdown icon"></i>
+                <div class = "default text"> Select </div>
+                <div class = "menu">
+                </div>
+            </div>
+            <label class = "ui label"> 請購項目: </label>
+            <input type = "text" id = "buy_name">
+            <br>
+            <label class = "ui label"> 請購金額: </label>
+            <input type = "text" id = "buy_money">
+            <br>
+            <label class = "ui label"> 傳票號碼: </label>
+            <input type = "text" id = "ticket_num">
+            <br>
+            <button id = "save_report" class = "ui button"> Save </button>
+        </form>
+        <div class = "ui modal" id = "check_save">
+            <i class = "close icon"></i>
+            <div class = "ui icon header">
+                <i class = "save icon"></i>
+                Save message
+            </div>
+            <div class = "content">
+                <p> Do you want to save? </p>
+            </div>
+            <div class = "actions">
+                <div class = "ui green ok button">
+                    <i class = "checkmark icon"></i>
+                    Yes
+                </div>
+                <div class = "ui red basic cancel button">
+                    <i class = "remove icon"></i>
+                    No
+                </div>
+            </div>
+        </div>
+        <div class = "ui modal" id = "success">
+            <i class = "close icon"></i>
+            <div class = "ui icon header">
+                <i class = "checkmark icon"></i>
+                Success
+            </div>
+        </div>
+        <div class = "ui modal" id = "failed">
+            <i class = "close icon"></i>
+            <div class = "ui icon header">
+                <i class = "warning sign icon"></i>
+                Failed
+            </div>
+        </div>
         <script src = "./assets/report.js"></script>
     </body>
 </HTML>
