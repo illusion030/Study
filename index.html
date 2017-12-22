@@ -1,27 +1,45 @@
 <HTML>
     <head>
-        <title> login </title>
+        <title> Home </title>
+        <meta http-equiv = "Content-Type" content = "text/html; charset = utf-8">
         <link rel = 'stylesheet' href = 'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css'>
         <link rel = 'stylesheet' href = 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css'>
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+        <script src = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script> 
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js"></script>
         <script src = "https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
     </head>
+    <body id = "Site">
+        <div class = "ui large menu">
+            <a id = "call_report" class = "large item"> 輸入 </a>
+            <a id = "call_edit" class = "large item"> 編輯 </a>
+            <a id = "call_show" class = "large item"> 顯示 </a>
+        </div>        
+                
+        <div id = "show"></div>
+        <br>
+        <br>
+        <div class = "ui inverted vertical footer center aligned segment">
+            <p>&copy; 國立成功大學 教學發展中心 All rights reserved. </p>
+        </div>
 
-    <body>
-        <form id = "login_form" class = "ui form">
-            <label> Account: </label>
-            <input type="text" id="login_account">
-            <br>
-            <label> Password: </label>
-            <input type="text" id="login_password">
-            <br>
-            <button id = "login_send" class = "ui button"> Submit </button>
-        </form>
-        <div id="return"></div>
+        <style type = "text/css">
+            
+            #Site {
+                display: flex;
+                min-height: 100vh;
+                flex-direction: column;
+            }
+            #show {
+                flex: 1;
+            }
+            button {
+                flex: 0;
+            }
+          
+        </style>
+    
 
-        <script src = "./assets/main.js"></script>
-  </body>
-
+        <script src = "./assets/index.js"></script>
+    </body>
 </HTML>

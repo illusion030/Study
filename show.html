@@ -11,12 +11,13 @@
     <body>
 
         <div class = "ui inverted active dimmer" id = "load_show">
-            <div class = "ui indeterminate text loader"> Preparing files </div>
+            <div class = "ui indeterminate text loader"> 資料處理中 </div>
         </div>
 
         <div class = "ui grid">
             <div class = "four wide column" id = "show_select"></div>
             <div class = "twelve wide column">
+                <div class = "ui container" id = "print_table">
                 <table id = "report_table" border = "1" width = "1200px" class = "ui celled table">
                     <tr>
                         <th> 建檔日期 </th>
@@ -27,6 +28,7 @@
                         <th> 傳票號碼 </th>
                     </tr>
                 </table>
+                </div>
             </div>
         </div>
         <script src = "./assets/show.js"></script>

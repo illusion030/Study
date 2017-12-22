@@ -16,7 +16,8 @@ database.ref('/實施主軸').once('value').then(function(snapshot) {
         $('#show_select').append ("<div class = 'ui checkbox'><input type = 'checkbox' checked = ''><label>" + snap.val() + "</label></div><br>")
         $('#report_table tr:last').after('<tr id = "row' + snap.val() + '"><td colspan = "6" align = "center" bgcolor = "F2FFFF">'+ snap.val() +'</td></tr>')
     })
-
+    
+    $('#show_select').append ("<br><button class = 'ui blue basic button' onclick = 'print_screen($(\"#print_table\"))'>列印</button><br>")
     $('.checkbox').checkbox({
         onChecked: function() {
             $('#row'+ $(this.nextSibling.firstChild)[0].textContent +'').show()
@@ -35,3 +36,16 @@ database.ref('/報表').once('value').then (
         $('#load_show').hide()
     }
 )
+
+function print_screen(e) {
+    $('#report_table').attr('width', '1000px')
+    var value = $('#print_table').html()
+    var print_page = window.open('', 'Printing...', '')
+    print_page.document.open()
+    print_page.document.write('<HTML><head></head><BODY onload = "window.print();window.close()">')
+    print_page.document.write('<PRE>')
+    print_page.document.write(value)
+    print_page.document.write('</PRE>')
+    print_page.document.close('</BODY></HTML>')
+    $('#report_table').attr('width', '1200px')
+}
