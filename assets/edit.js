@@ -10,25 +10,51 @@ var config = {
 firebase.initializeApp(config);
 
 var database = firebase.database();
-
 var is_changed = false
+var user = getCookie('account')
+var user_count
 
 $(document).ready(function() {
     refresh()
 })
 
+function getCookie(cname) {
+    var name = cname + "="
+    var decodedCookie = decodeURIComponent(document.cookie)
+    var ca = decodedCookie.split(';')
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i]
+        while(c.charAt(0) == ' ') {
+            c = c.substring(1)
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length)
+        }
+    }
+    return ""
+}
+
 function refresh() {
     $('#report_table > tbody').empty()
     is_changed = false
     $('#load_edit').show()
-    database.ref('/報表').once('value').then (
-        function(snapshot) {
-            snapshot.forEach(function(snap) {
-                $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val()['請購編號'] +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ snap.val()['建檔日期'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購編號'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['實施主軸'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購類別'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購項目'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購金額'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['傳票號碼'] +'</td><td><button class = "ui red basic button" onclick = "remove_edit(\''+ snap.val()['請購編號'] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button></td></tr>')
-            })
-            $('#load_edit').hide()
-        }
-    )
+    database.ref('/users').once('value').then(function(users) {
+        user_count = 1
+        users.forEach(function(u) {
+            if (user == u.val()['account']) {
+                var c = user_count
+                database.ref('users/'+ c +'/報表').once('value').then (
+                    function(snapshot) {
+                        snapshot.forEach(function(snap) {
+                            $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val()['請購編號'] +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ snap.val()['建檔日期'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購編號'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['實施主軸'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購類別'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購項目'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購金額'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['傳票號碼'] +'</td><td><button class = "ui red basic button" onclick = "remove_edit(\''+ snap.val()['請購編號'] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button></td></tr>')
+                        })
+                        $('#load_edit').hide()
+                    }
+                )
+            }
+            user_count++
+        })
+    })
 }
 
 function edit_change(){
@@ -73,16 +99,26 @@ $('.ui.ok.button').click(function(e) {
             '傳票號碼':item.cells[6].innerHTML
         }
     })
-    updates['/報表'] = data
+
     $('#load_edit').show()
-    database.ref().update(updates).then(function() {
-        is_changed = false
-        $('#load_edit').hide()
-        $('#success').modal('show')
-    }).catch(function(err) {
-        console.log('Edit failed.' + err)
-        is_changed = false
-        $('#load_edit').hide()
-        $('#failed').modal('show')
+    database.ref('/users').once('value').then(function(users) {
+        user_count = 1
+        users.forEach(function(u) {
+            if (user == u.val()['account']) {
+                var c = user_count
+                updates['users/'+ c +'/報表'] = data
+                database.ref().update(updates).then(function() {
+                    is_changed = false
+                    $('#load_edit').hide()
+                    $('#success').modal('show')
+                }).catch(function(err) {
+                    console.log('Edit failed.' + err)
+                    is_changed = false
+                    $('#load_edit').hide()
+                    $('#failed').modal('show')
+                })
+            }
+            user_count++
+        })
     })
 })

@@ -8,31 +8,61 @@
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js"></script>
         <script src = "https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
     </head>
-    <body>
+    <body id = "Site">
+
+        <div class = "ui large menu">
+            <a href = "./report.html" class = "large item"> 輸入 </a>
+            <a href = "./edit.html" class = "large item"> 編輯 </a>
+            <a href = "./show.html" class = "large item"> 顯示 </a>
+            <a href = "./" class = "right aligned large item"> 首頁 </a>
+        </div>
 
         <div class = "ui inverted active dimmer" id = "load_edit">
             <div class = "ui indeterminate text loader"> 資料處理中 </div>
         </div>
-
-        <table id = "report_table" border="1" class = "ui celled table" >
-            <thead>
-                <tr>
-                    <th> 建檔日期 </th>
-                    <th> 請購編號 </th>
-                    <th> 實施主軸 </th>
-                    <th> 請購類別 </th>
-                    <th> 請購項目 </th>
-                    <th> 請購金額 </th>
-                    <th> 傳票號碼 </th>
-                    <th> 刪除 </th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
         
-        <button id = "edit_save" class = "medium ui blue basic button"> 存檔 </button>
-        <button id = "edit_refresh" class = "medium ui blue basic button"> 復原 </button>
+        <div id = "container">
+            <table id = "report_table" border="1" class = "ui celled table" >
+                <thead>
+                    <tr>
+                        <th> 建檔日期 </th>
+                        <th> 請購編號 </th>
+                        <th> 實施主軸 </th>
+                        <th> 請購類別 </th>
+                        <th> 請購項目 </th>
+                        <th> 請購金額 </th>
+                        <th> 傳票號碼 </th>
+                        <th> 刪除 </th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <button id = "edit_save" class = "medium ui blue basic button"> 存檔 </button>
+            <button id = "edit_refresh" class = "medium ui blue basic button"> 復原 </button>
+            <br>
+            <br>
+        </div>
+
+        <div class = "ui inverted vertical footer center aligned segment">
+            <p>&copy; 國立成功大學 教學發展中心 All rights reserved. </p>
+        </div>
+
+        <style type = "text/css">
+
+            #Site {
+                display: flex;
+                min-height: 100vh;
+                flex-direction: column;
+            }
+            #container {
+                flex: 1;
+            }
+
+        </style>
+
+        <!-- modal
+        ============================-->
 
         <div class = "ui modal" id = "check_edit">
             <i class = "close icon"></i>

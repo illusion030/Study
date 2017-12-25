@@ -10,6 +10,8 @@ var config = {
 firebase.initializeApp(config);
 
 var database = firebase.database();
+var user = getCookie('account')
+var user_count
 
 /**********  Report  **********/
 
@@ -21,6 +23,22 @@ $(document).ready(function() {
     $('#buy_money').val('NT$0')
     $('.modal').modal('setting', 'closable', false)
 })
+
+function getCookie(cname) {
+    var name = cname + "="
+    var decodedCookie = decodeURIComponent(document.cookie)
+    var ca = decodedCookie.split(';')
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i]
+        while(c.charAt(0) == ' ') {
+            c = c.substring(1)
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length)
+        }
+    }
+    return ""
+}
 
 $('#buy_money').focusout(function() {
     if ($.isNumeric($('#buy_money').val())) {
@@ -69,35 +87,44 @@ $('#report_save').click(function(e) {
 $('#report_ok').click(function(e){
     e.preventDefault()
     $('#load_report').show()
-    database.ref('/報表').once('value').then (
-        function(snapshot) {
-            var count = snapshot.numChildren()+1
-            var updates = {}
-            var data = {
-                '建檔日期':$('#report_date').val(),
-                '請購編號':$('#buy_num').val(),
-                '實施主軸':$('#use_title').dropdown('get value'),
-                '請購類別':$('#buy_type').dropdown('get value'),
-                '請購項目':$('#buy_name').val(),
-                '請購金額':$('#buy_money').val(),
-                '傳票號碼':$('#ticket_num').val()
+    database.ref('/users').once('value').then(function(users) {
+        user_count = 1
+        users.forEach(function(u) {
+            if (user == u.val()['account']) {
+                c = user_count
+                database.ref('/users/'+ c +'/報表').once('value').then (
+                    function(snapshot) {
+                        var count = snapshot.numChildren()+1
+                        var updates = {}
+                        var data = {
+                            '建檔日期':$('#report_date').val(),
+                            '請購編號':$('#buy_num').val(),
+                            '實施主軸':$('#use_title').dropdown('get value'),
+                            '請購類別':$('#buy_type').dropdown('get value'),
+                            '請購項目':$('#buy_name').val(),
+                            '請購金額':$('#buy_money').val(),
+                            '傳票號碼':$('#ticket_num').val()
+                        }
+                        updates['/users/'+ c +'/報表/'+ count] = data
+                        database.ref().update(updates).then(function() {
+                            $('#report_date').datepicker('setDate', new Date())
+                            $('#buy_num').val('')
+                            $('.ui.dropdown').dropdown('clear')
+                            $('#buy_name').val('')
+                            $('#buy_money').val('NT$0')
+                            $('#ticket_num').val('')
+                            $('#success').modal('show')
+                        }).catch(function(err) {
+                            console.log('Save failed.' + err)
+                            $('#failed').modal('show')
+                        })
+                    }
+                )
             }
-            updates['/報表/' + count] = data
-            database.ref().update(updates).then(function() {
-                $('#report_date').datepicker('setDate', new Date())
-                $('#buy_num').val('')
-                $('.ui.dropdown').dropdown('clear')
-                $('#buy_name').val('')
-                $('#buy_money').val('NT$0')
-                $('#ticket_num').val('')
-                $('#success').modal('show')
-            }).catch(function(err) {
-                console.log('Save failed.' + err)
-                $('#failed').modal('show')
-            })
-        }
-    )
-    $('#load_report').hide()
+            user_count++
+        })
+        $('#load_report').hide()
+    })
 
 })
 

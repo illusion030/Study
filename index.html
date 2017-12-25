@@ -11,34 +11,104 @@
     </head>
     <body id = "Site">
         <div class = "ui large menu">
-            <a id = "call_report" class = "large item"> 輸入 </a>
-            <a id = "call_edit" class = "large item"> 編輯 </a>
-            <a id = "call_show" class = "large item"> 顯示 </a>
+            <a id = 'go_to_input' class = "large item"> 輸入 </a>
+            <a id = 'go_to_edit' class = "large item"> 編輯 </a>
+            <a id = 'go_to_show' class = "large item"> 顯示 </a>
         </div>        
                 
-        <div id = "show"></div>
+        <div id = "container">
+        </div>
         <br>
         <br>
+
         <div class = "ui inverted vertical footer center aligned segment">
             <p>&copy; 國立成功大學 教學發展中心 All rights reserved. </p>
         </div>
 
         <style type = "text/css">
-            
             #Site {
                 display: flex;
                 min-height: 100vh;
                 flex-direction: column;
             }
-            #show {
+            #container {
+                margin-top: 100px;
                 flex: 1;
-            }
-            button {
-                flex: 0;
-            }
-          
+            }  
         </style>
-    
+
+        <div class = "ui modal" id = "login_success">
+            <i class = 'close icon'></i>
+            <div class = "ui icon header">
+                <i class = "checkmark icon"></i>
+                    登入成功
+            </div>
+        </div>
+
+        <div class = "ui modal" id = "login_failed">
+            <i class = 'close icon'></i>
+            <div class = "ui icon header">
+                <i class = "warning sign icon"></i>
+                    登入失敗
+            </div>
+            <div class = "content">
+                帳號或密碼錯誤
+            </div>
+        </div>
+
+        <div class = "ui modal" id = "not_login">
+            <i class = 'close icon'></i>
+            <div class = "ui icon header">
+                <i class = "warning sign icon"></i>
+                    尚未登入
+            </div>
+            <div class = "content">
+                請先登入
+            </div>
+        </div>
+
+        <div class = "ui modal" id = "reg_modal">
+            <i class = 'close icon'></i>
+            <div class = "ui icon header">
+                <i class = "warning sign icon"></i>
+                    註冊
+            </div>
+            <div class = "content">
+                <form id = "reg_form" class = 'ui form'>
+                    <label class = 'ui large label'>帳號</label>
+                    <input type = 'text' id = 'reg_acc'>
+                    <br>
+                    <label class = 'ui large label'>密碼</label>
+                    <input type = 'text' id = 'reg_pwd'>
+                </form>
+            </div>
+            <div class = "actions">
+                <div class = "ui green ok button" id = "reg_ok">
+                    <i class = "checkmark icon"></i>
+                        註冊
+                </div>
+                <div class = "ui red basic cancel button" id = "reg_cancel">
+                    <i class = "remove icon"></i>
+                        取消
+                </div>
+            </div>
+        </div>
+
+        <div class = "ui modal" id = "reg_success">
+            <i class = 'close icon'></i>
+            <div class = "ui icon header">
+                <i class = "checkmark icon"></i>
+                    註冊成功
+            </div>
+        </div>
+
+        <div class = "ui modal" id = "reg_failed">
+            <i class = 'close icon'></i>
+            <div class = "ui icon header">
+                <i class = "warning sign icon"></i>
+                    註冊失敗
+            </div>
+        </div>
 
         <script src = "./assets/index.js"></script>
     </body>

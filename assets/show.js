@@ -10,6 +10,42 @@ var config = {
 firebase.initializeApp(config);
 
 var database = firebase.database();
+var user = getCookie('account')
+var user_count
+
+function getCookie(cname) {
+    var name = cname + "="
+    var decodedCookie = decodeURIComponent(document.cookie)
+    var ca = decodedCookie.split(';')
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i]
+        while(c.charAt(0) == ' ') {
+            c = c.substring(1)
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length)
+        }
+    }
+    return ""
+}
+
+database.ref('/users').once('value').then(function(users) {
+    user_count = 1
+    users.forEach(function(u) {
+        if (user == u.val()['account']) {
+            c = user_count
+            database.ref('users/'+ c +'/報表').once('value').then (
+                function(snapshot) {
+                    snapshot.forEach(function(snap) {
+                        $('#report_table tr:contains("'+ snap.val()['實施主軸'] +'")').after('<tr id = "row'+ snap.val()['實施主軸'] +'"><td>'+ snap.val()['建檔日期'] +'</td><td>'+ snap.val()['請購編號'] +'</td><td>'+ snap.val()['請購類別'] +'</td><td>'+ snap.val()['請購項目'] +'</td><td>'+ snap.val()['請購金額'] +'</td><td>'+ snap.val()['傳票號碼'] +'</td></tr>')
+                    })
+                    $('#load_show').hide()
+                }
+            )
+        }
+        user_count++
+    })
+})
 
 database.ref('/實施主軸').once('value').then(function(snapshot) {
     snapshot.forEach(function(snap) {
@@ -27,15 +63,6 @@ database.ref('/實施主軸').once('value').then(function(snapshot) {
         }
     })
 })
-
-database.ref('/報表').once('value').then (
-    function(snapshot) {
-        snapshot.forEach(function(snap) {
-            $('#report_table tr:contains("'+ snap.val()['實施主軸'] +'")').after('<tr id = "row'+ snap.val()['實施主軸'] +'"><td>'+ snap.val()['建檔日期'] +'</td><td>'+ snap.val()['請購編號'] +'</td><td>'+ snap.val()['請購類別'] +'</td><td>'+ snap.val()['請購項目'] +'</td><td>'+ snap.val()['請購金額'] +'</td><td>'+ snap.val()['傳票號碼'] +'</td></tr>')
-        })
-        $('#load_show').hide()
-    }
-)
 
 function print_screen(e) {
     $('#report_table').attr('width', '1000px')
