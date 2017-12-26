@@ -43,9 +43,10 @@ function checkCookie() {
         $('#logout_btn').click(function() {
             setCookie('account', '')
             checkCookie()
+            $('#logout_success').modal('show')
         })
     } else {
-        $('#container').html("<div class = 'ui padded center aligned container'><p>現在有三組帳密分別為<br>帳:123 密:123<br>帳:456 密:456<br>帳:ctld 密:ctld<br><br>註冊還沒弄好</p><label class = 'ui large label'>帳號</label><input class = 'ui input' id = 'account'></input><br><br><label class = 'ui large label'>密碼</label><input class = 'ui input' id = 'pwd'></input><br><br><button class = 'ui button' id = 'login_btn'>登入</button><button class = 'ui button' id = 'reg_btn'>註冊</button></div>")
+        $('#container').html("<div class = 'ui padded left aligned text container'><form id = 'login_form' class = 'ui form'><label class = 'ui large label'>帳號</label><input type = 'text' id = 'account'></input><br><br><label class = 'ui large label'>密碼</label><input type = 'password' id = 'pwd'></input><br><br></form><button class = 'ui right floated button' id = 'reg_btn'>註冊</button><button class = 'ui right floated button' id = 'login_btn'>登入</button></div>")
         var database = firebase.database();
         $('#login_btn').click(function() {
             is_login = false
@@ -68,7 +69,16 @@ function checkCookie() {
             )
         })
         $('#reg_btn').click(function() {
-            $('#reg_modal').modal('show')
+            $('#reg_acc').val('')
+            $('#reg_pwd').val('')
+            $('#account').val('')
+            $('#pwd').val('')
+            $('#reg_err').remove()
+            $('#reg_modal').modal('setting', {
+                onApprove: function() {
+                    return false;
+                }
+            }).modal('show')
         })
     }
 }
@@ -107,20 +117,42 @@ $('#go_to_show').click(function() {
 
 $('#reg_ok').click(function(e) {
     e.preventDefault()
-    var database = firebase.database();
-    database.ref('/users').once('value').then(function(users) {
-        var count = users.numChildren()+1
-        var updates = {}
-        var data = {
-            'account':$('#reg_acc').val(),
-            'pwd':$('#reg_pwd').val()
-        }
-        updates['/users/' + count] = data
-        database.ref().update(updates).then(function() {
-            $('#reg_success').modal('show')
-        }).catch(function(err) {
-            console.log('Reg failed' + err)
-            $('#reg_failed').modal('show')
+    var database = firebase.database()
+    var repeat_acc = false
+
+    if ($('#reg_acc').val() == "" || $('#reg_pwd').val() == "") {
+        $('#reg_err').remove()
+        $('<p id = "reg_err" style = "color:red;">帳號或密碼不得為空</p>').insertBefore('#reg_form')
+    } else {
+        database.ref('/users').once('value').then(function(users_exist) {
+            var i = 1
+            while(users_exist.val()[i]) {
+                if ($('#reg_acc').val() == users_exist.val()[i]['account']) {
+                    $('#reg_err').remove()
+                    $('<p id = "reg_err" style = "color:red;"> 帳號名稱已被使用 </p>').insertBefore('#reg_form')
+                    repeat_acc = true
+                    break
+                }
+                i++
+            }
+            if (!repeat_acc) {
+                $('#reg_err').remove()
+                database.ref('/users').once('value').then(function(users) {
+                    var count = users.numChildren()+1
+                    var updates = {}
+                    var data = {
+                        'account':$('#reg_acc').val(),
+                        'pwd':$('#reg_pwd').val()
+                    }
+                    updates['/users/' + count] = data
+                    database.ref().update(updates).then(function() {
+                        $('#reg_success').modal('show')
+                    }).catch(function(err) {
+                        console.log('Reg failed' + err)
+                        $('#reg_failed').modal('show')
+                    })
+                })
+            }
         })
-    })
+    }
 })
