@@ -67,12 +67,17 @@ database.ref('/實施主軸').once('value').then(function(snapshot) {
 function print_screen(e) {
     $('#report_table').attr('width', '1000px')
     var value = $('#print_table').html()
-    var print_page = window.open('', 'Printing...', '')
-    print_page.document.open()
-    print_page.document.write('<HTML><head></head><BODY onload = "window.print();window.close()">')
-    print_page.document.write('<PRE>')
+
+    var print_page = window.open('', 'PRINT', 'height=400,eidth=600')
+    print_page.document.write('<HTML><head><title> Report </title></head><body>')
     print_page.document.write(value)
-    print_page.document.write('</PRE>')
-    print_page.document.close('</BODY></HTML>')
+    print_page.document.write('</body></html>')
+    
+    print_page.document.close()
+    print_page.focus()
+    
+    print_page.print()
+    print_page.close()
+    
     $('#report_table').attr('width', '1200px')
 }
