@@ -13,10 +13,70 @@ var database = firebase.database();
 var is_changed = false
 var user = getCookie('account')
 var user_count
+var cb_count = {items: []}
 
 $(document).ready(function() {
     refresh()
 })
+
+database.ref('/實施主軸').once('value').then(function(snapshot) {
+    $('#show_select').append ("<div class = 'ui segment' id = 'date_seg'><div class = 'ui top left attached large label'>設定日期範圍</div></div>")
+    $('#show_select').append ("<div class = 'ui segment' id = 'use_seg'><div class = 'ui top left attached large label'>實施主軸</div></div>")
+    snapshot.forEach(function(snap) {
+        $('#use_seg').append ("<div class = 'ui checkbox' id = 'cb"+ snap.val() +"'><input type = 'checkbox' checked = ''><label>" + snap.val() + "</label></div><br>")
+        $('#cb'+ snap.val()).checkbox({
+            onChecked: function() {
+                show_count($(this.nextSibling.firstChild)[0].textContent, 'show')
+            },
+            onUnchecked: function() {
+                show_count($(this.nextSibling.firstChild)[0].textContent, 'hide')
+            }
+        })
+        database.ref('/請購類別').once('value').then(function(buy) {
+            buy.forEach(function(b) {
+                cb_count.items.push({use_id: snap.val(), buy_id: b.val(), count: 2})
+            })
+        })
+    })
+    console.log(cb_count.items)
+})
+
+database.ref('/請購類別').once('value').then(function(snapshot) {
+    $('#show_select').append ("<div class = 'ui segment' id = 'buy_seg'><div class = 'ui top left attached large label'>請購類別</div></div>")
+    snapshot.forEach(function(snap) {
+        $('#buy_seg').append ("<div class = 'ui checkbox' id = 'cb"+ snap.val() +"'><input type = 'checkbox' checked = ''><label>" + snap.val() + "</label></div><br>")
+        $('#cb'+ snap.val()).checkbox({
+            onChecked: function() {
+                show_count($(this.nextSibling.firstChild)[0].textContent, 'show')
+            },
+            onUnchecked: function() {
+                show_count($(this.nextSibling.firstChild)[0].textContent, 'hide')
+            }
+        })
+    })
+})
+
+function show_count(e, str) {
+
+    for (i in cb_count.items) {
+        if (e == cb_count.items[i].use_id)
+            if (str == 'show')
+                cb_count.items[i].count++
+            else if (str == 'hide')
+                cb_count.items[i].count--
+        
+        if (e == cb_count.items[i].buy_id)            
+            if (str == 'show')
+                cb_count.items[i].count++
+            else if (str == 'hide')
+                cb_count.items[i].count--
+        
+        if (cb_count.items[i].count == 2)
+            $("#"+ cb_count.items[i].use_id + cb_count.items[i].buy_id +"").show()
+        if (cb_count.items[i].count < 2)
+            $("#"+ cb_count.items[i].use_id + cb_count.items[i].buy_id +"").hide()
+    }
+}
 
 function getCookie(cname) {
     var name = cname + "="
@@ -46,7 +106,7 @@ function refresh() {
                 database.ref('users/'+ c +'/報表').once('value').then (
                     function(snapshot) {
                         snapshot.forEach(function(snap) {
-                            $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val()['請購編號'] +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ snap.val()['建檔日期'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購編號'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['實施主軸'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購類別'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購項目'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購金額'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['傳票號碼'] +'</td><td><button class = "ui red basic button" onclick = "remove_edit(\''+ snap.val()['請購編號'] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button></td></tr>')
+                            $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val()['實施主軸'] + snap.val()['請購類別'] +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ snap.val()['建檔日期'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購編號'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['實施主軸'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購類別'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購項目'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購金額'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['傳票號碼'] +'</td><td><button class = "ui red basic button" onclick = "remove_edit(\''+ snap.val()['請購編號'] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button></td></tr>')
                         })
                         $('#load_edit').hide()
                     }

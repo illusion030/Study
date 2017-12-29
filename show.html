@@ -23,9 +23,19 @@
 
         <div id = "container">
             <div class = "ui grid">
-                <div class = "four wide column" id = "show_select"></div>
+                <div class = "four wide column" id = "show_select">
+                    <div class = "ui segment" id = "date_seg">
+                        <div class = "ui top left attached large label">
+                            設定日期範圍
+                        </div>
+                        <div>
+                            <input type = "text" id = "start_date" placeholder = "start date">
+                            <input type = "text" id = "end_date" placeholder = "end date">
+                        </div>
+                    </div>
+                </div>
                 <div class = "twelve wide column">
-                    <div class = "ui container" id = "print_table">
+                    <div id = "print_table">
                     <table id = "report_table" border = "1" width = "1200px" class = "ui celled table">
                         <tr>
                             <th> 建檔日期 </th>

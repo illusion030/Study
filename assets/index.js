@@ -13,7 +13,7 @@ var is_login
 $(document).ready(function() {
     $('.modal').modal('setting', 'closable', false)
     checkCookie()
-
+    $('#load_index').hide()
 })
 
 function setCookie(cname, cvalue) {
@@ -50,6 +50,7 @@ function checkCookie() {
         var database = firebase.database();
         $('#login_btn').click(function() {
             is_login = false
+            $('#load_index').show()
             database.ref('/users').once('value').then(
                 function(snapshot) {
                     snapshot.forEach(function(snap) {
@@ -65,6 +66,7 @@ function checkCookie() {
                     } else {
                         $("#login_failed").modal('show')
                     }
+                    $('#load_index').hide()
                 }
             )
         })
@@ -124,6 +126,7 @@ $('#reg_ok').click(function(e) {
         $('#reg_err').remove()
         $('<p id = "reg_err" style = "color:red;">帳號或密碼不得為空</p>').insertBefore('#reg_form')
     } else {
+        $('#load_index').show()
         database.ref('/users').once('value').then(function(users_exist) {
             var i = 1
             while(users_exist.val()[i]) {
@@ -153,6 +156,7 @@ $('#reg_ok').click(function(e) {
                     })
                 })
             }
+            $('#load_index').hide()
         })
     }
 })

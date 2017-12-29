@@ -22,24 +22,29 @@
         </div>
         
         <div id = "container">
-            <table id = "report_table" border="1" class = "ui celled table" >
-                <thead>
-                    <tr>
-                        <th> 建檔日期 </th>
-                        <th> 請購編號 </th>
-                        <th> 實施主軸 </th>
-                        <th> 請購類別 </th>
-                        <th> 請購項目 </th>
-                        <th> 請購金額 </th>
-                        <th> 傳票號碼 </th>
-                        <th> 刪除 </th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <div class = "ui grid">
+                <div class = "four wide column" id = "show_select"></div>
+                <div class = "twelve wide column">
+                    <table id = "report_table" border="1" class = "ui celled table" >
+                        <thead>
+                            <tr>
+                                <th> 建檔日期 </th>
+                                <th> 請購編號 </th>
+                                <th> 實施主軸 </th>
+                                <th> 請購類別 </th>
+                                <th> 請購項目 </th>
+                                <th> 請購金額 </th>
+                                <th> 傳票號碼 </th>
+                                <th> 刪除 </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
             <button id = "edit_save" class = "medium ui blue basic button"> 存檔 </button>
             <button id = "edit_refresh" class = "medium ui blue basic button"> 復原 </button>
+                </div>
+            </div>
             <br>
             <br>
         </div>
