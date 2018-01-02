@@ -14,6 +14,21 @@
             <a href = "./report.html" class = "large item"> 輸入 </a>
             <a href = "./edit.html" class = "large item"> 編輯 </a>
             <a href = "./show.html" class = "large item"> 顯示 </a>
+            <div class = "ui selection dropdown item" id = "year_drop">
+                <input type = "hidden" id = "year">
+                <i class = "dropdown icon"></i>
+                <div class = "default text">年度</div>
+                <div class = "menu" id = "year_menu">
+                </div>
+            </div>
+            <div class = "ui selection dropdown item" id = "number_drop">
+                <input type = "hidden" id = "number">
+                <i class = "dropdown icon"></i>
+                <div class = "default text">會編</div>
+                <div class = "menu" id = "number_menu">
+                </div>
+            </div>
+            <a href = "./" class = "right aligned large item"> 首頁 </a>
             <a href = "./" class = "right aligned large item"> 首頁 </a>
         </div>
 
@@ -23,7 +38,33 @@
         
         <div id = "container">
             <div class = "ui grid">
-                <div class = "four wide column" id = "show_select"></div>
+                <div class = "four wide column" id = "show_select">
+                    <div class = "ui segment" id = "not_filled_seg">
+                        <div class = "ui top left attached large label">
+                            未填妥項目
+                        </div>
+                        <div class = "ui slider checkbox" id = "not_filled_cb">
+                            <input type = "checkbox">
+                            <label>只顯示未填妥項目</label>
+                        </div>
+                    </div>
+                    <div class = "ui segment" id = "date_seg">
+                        <div class = "ui top left attached large label">
+                            設定日期範圍
+                        </div>
+                        <form id = "date_form" class = "ui form">
+                            <label class = "ui large label"> 開始日期: </label>
+                            <input type = "text" id = "start_date" placeholder = "start date" readonly>
+                            <br>
+                            <br>
+                            <label class = "ui large label"> 結束日期: </label>
+                            <input type = "text" id = "end_date" placeholder = "end date" readonly>
+                            <br>
+                            <br>
+                            <button type = "button" class = "ui button" id = "clr_btn"> 清空 </button>
+                        </form>
+                    </div>
+                </div>
                 <div class = "twelve wide column">
                     <table id = "report_table" border="1" class = "ui celled table" >
                         <thead>

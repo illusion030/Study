@@ -12,10 +12,14 @@ firebase.initializeApp(config);
 var database = firebase.database();
 var user = getCookie('account')
 var user_count
+var year = ""
+var number = ""
 
 /**********  Report  **********/
 
 $(document).ready(function() {
+    update_year()
+    update_number()
     update_use()
     update_buy()
     $('#report_date').datepicker({ dateFormat: 'yy/mm/dd' })
@@ -47,20 +51,78 @@ $('#buy_money').focusout(function() {
     }
 })
 
-function update_use() {
+
+
+function update_year() {
     $('#load_report').show()
-    $('#use_menu').empty()
-    database.ref('/實施主軸').once('value').then (
+    $('#year_menu').empty()
+    database.ref('/年度').once('value').then (
         function(snapshot) {
             var i = 1
             while (snapshot.val()[i]) {
-                $("#use_title").find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i]  + "</div>");
+                $("#year_title").find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i]  + "</div>");
                 i++
             }
-            $('#use_title').dropdown()
+            $('#year_title').dropdown({
+                onChange: function() {
+                    year = $('#year_title').dropdown('get value')
+                    $('#number_title').dropdown('clear')
+                    $('#use_title').dropdown('clear')
+                    number = ""
+                    update_number()
+                }
+            })
             $('#load_report').hide()
         }
     )
+}
+
+function update_number() {
+    
+    $('#number_menu').empty()
+    
+    if (year != "") {
+        $('#load_report').show()
+        database.ref('/會編/' + year).once('value').then (
+            function(snapshot) {
+                var i = 1
+                if (snapshot.val()) {
+                    while (snapshot.val()[i]) {
+                        $("#number_title").find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i]  + "</div>");
+                        i++
+                    }
+                }
+                $('#number_title').dropdown({
+                    onChange: function() {
+                        number = $('#number_title').dropdown('get value'),
+                        $('#use_title').dropdown('clear')
+                        update_use()
+                    }
+                })
+                $('#load_report').hide()
+            }
+        )
+    }
+}
+
+function update_use() {
+    $('#load_report').show()
+    $('#use_menu').empty()
+    if (number != "") {
+        database.ref('/實施主軸/' + year + '/' + number).once('value').then (
+            function(snapshot) {
+                var i = 1
+                if (snapshot.val()) {
+                    while (snapshot.val()[i]) {
+                        $("#use_title").find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i]  + "</div>");
+                        i++
+                    }
+                }
+                $('#use_title').dropdown()
+                $('#load_report').hide()
+            }
+        )
+    }
 }
 
 function update_buy() {
@@ -99,6 +161,8 @@ $('#report_ok').click(function(e){
                         var data = {
                             '建檔日期':$('#report_date').val(),
                             '請購編號':$('#buy_num').val(),
+                            '年度':$('#year_title').dropdown('get value'),
+                            '會編':$('#number_title').dropdown('get value'),
                             '實施主軸':$('#use_title').dropdown('get value'),
                             '請購類別':$('#buy_type').dropdown('get value'),
                             '請購項目':$('#buy_name').val(),
@@ -114,6 +178,8 @@ $('#report_ok').click(function(e){
                             $('#buy_money').val('NT$0')
                             $('#ticket_num').val('')
                             $('#success').modal('show')
+                            year = ""
+                            number = ""
                         }).catch(function(err) {
                             console.log('Save failed.' + err)
                             $('#failed').modal('show')
@@ -129,6 +195,142 @@ $('#report_ok').click(function(e){
 })
 
 /*****************************************************/
+/***************  Edit year  *************************/
+
+$('#edit_year').click(function(e) {
+    
+    e.preventDefault()
+
+    $('#year_table > tbody').empty()
+
+    database.ref('/年度').once('value').then (
+        function(snapshot) {
+            var i = 1
+            while (snapshot.val()[i]) {
+                $("#year_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><button class = "ui red basic button" onclick = "remove_year(\''+ snapshot.val()[i] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green basic right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+                i++
+            }
+            $('#year_modal').modal('show')
+        }
+    )
+    
+})
+
+$('#add_year').click(function(e) {
+    e.preventDefault()
+    var item = $('#add_year_input').val()
+    
+    if (item) { 
+        $("#year_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable="true">'+ item +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ item +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green basic right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+        $('#add_year_input').val('')
+    }
+})
+
+$('#year_save').click(function(e) {
+    e.preventDefault()
+    $('#check_year').modal('show')
+})
+
+$('#year_ok').click(function(e){
+      e.preventDefault()
+      
+      var i = 1
+      var updates = {}
+      var data = {}
+
+      $('#year_table > tbody > tr > td:first-child').each(function(i, item) {
+          data[i+1] = item.innerHTML
+      })
+      updates['/年度'] = data
+      database.ref().update(updates).then(function() {
+          update_year()
+          $('#success').modal('show')
+      }).catch(function(err) {
+          console.log('Save failed.' + err)
+          $('#failed').modal('show')
+      })
+})
+
+$('#year_cancel').click(function(e){
+      e.preventDefault()
+      $('#year_modal').modal('show')
+})
+
+$('#year_close').click(function(e){
+      e.preventDefault()
+      $('#year_modal').modal('hide')
+})
+
+/*****************************************************/
+/***************  Edit number  **************************/
+
+$('#edit_number').click(function(e) {
+    
+    e.preventDefault()
+
+    $('#number_table > tbody').empty()
+
+    database.ref('/會編/' + year).once('value').then (
+        function(snapshot) {
+            var i = 1
+            if (snapshot.val()) {
+                while (snapshot.val()[i]) {
+                    $("#number_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ snapshot.val()[i] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green basic right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+                    i++
+                }
+            }
+            $('#number_modal').modal('show')
+        }
+    )
+    
+})
+
+$('#add_number').click(function(e) {
+    e.preventDefault()
+    var item = $('#add_number_input').val()
+    
+    if (item) { 
+        $("#number_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable="true">'+ item +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ item +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green basic right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+        $('#add_number_input').val('')
+    }
+})
+
+$('#number_save').click(function(e) {
+    e.preventDefault()
+    $('#check_number').modal('show')
+})
+
+$('#number_ok').click(function(e){
+      e.preventDefault()
+      
+      var i = 1
+      var updates = {}
+      var data = {}
+
+      $('#number_table > tbody > tr > td:first-child').each(function(i, item) {
+          data[i+1] = item.innerHTML
+      })
+      updates['/會編/' + year] = data
+      database.ref().update(updates).then(function() {
+          update_number()
+          $('#success').modal('show')
+      }).catch(function(err) {
+          console.log('Save failed.' + err)
+          $('#failed').modal('show')
+      })
+})
+
+$('#number_cancel').click(function(e){
+      e.preventDefault()
+      $('#number_modal').modal('show')
+})
+
+$('#number_close').click(function(e){
+      e.preventDefault()
+      $('#number_modal').modal('hide')
+})
+
+/*****************************************************/
 /***************  Edit use  **************************/
 
 $('#edit_use').click(function(e) {
@@ -137,12 +339,14 @@ $('#edit_use').click(function(e) {
 
     $('#use_table > tbody').empty()
 
-    database.ref('/實施主軸').once('value').then (
+    database.ref('/實施主軸/' + year + '/' + number).once('value').then (
         function(snapshot) {
             var i = 1
-            while (snapshot.val()[i]) {
-                $("#use_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><button class = "ui red basic button" onclick = "remove_use(\''+ snapshot.val()[i] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
-                i++
+            if (snapshot.val()) {
+                while (snapshot.val()[i]) {
+                    $("#use_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ snapshot.val()[i] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green basic right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+                    i++
+                }
             }
             $('#use_modal').modal('show')
         }
@@ -155,7 +359,7 @@ $('#add_use').click(function(e) {
     var item = $('#add_use_input').val()
     
     if (item) { 
-        $("#use_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable="true">'+ item +'</td><td><button class = "ui red basic button" onclick = "remove_use(\''+ item +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+        $("#use_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable="true">'+ item +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ item +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green basic right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
         $('#add_use_input').val('')
     }
 })
@@ -175,7 +379,8 @@ $('#use_ok').click(function(e){
       $('#use_table > tbody > tr > td:first-child').each(function(i, item) {
           data[i+1] = item.innerHTML
       })
-      updates['/實施主軸'] = data
+      
+      updates['/實施主軸/' + year + '/' + number] = data
       database.ref().update(updates).then(function() {
           update_use()
           $('#success').modal('show')
@@ -208,7 +413,7 @@ $('#edit_buy').click(function(e) {
         function(snapshot) {
             var i = 1
             while (snapshot.val()[i]) {
-                $("#buy_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable="true">'+ snapshot.val()[i] +'</td><td><button class = "ui red basic button" onclick = "remove_use(\''+ snapshot.val()[i] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+                $("#buy_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable="true">'+ snapshot.val()[i] +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ snapshot.val()[i] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green basic right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
                 i++
             }
             $('#buy_modal').modal('show')
@@ -221,7 +426,7 @@ $('#add_buy').click(function(e) {
     var item = $('#add_buy_input').val()
     
     if (item) { 
-        $("#buy_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable="true">'+ item +'</td><td><button class = "ui red basic button" onclick = "remove_use(\''+ item +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+        $("#buy_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable="true">'+ item +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ item +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green basic right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
         $('#add_buy_input').val('')
     }
 })
@@ -264,7 +469,7 @@ $('#buy_close').click(function(e){
 /****************************************************/
 /***************  Event function  *******************/
 
-function remove_use(e) {
+function remove_item(e) {
     $('#'+ e +'').remove()
 }
 

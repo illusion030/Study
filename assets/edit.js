@@ -14,13 +14,16 @@ var is_changed = false
 var user = getCookie('account')
 var user_count
 var cb_count = {items: []}
+var year = ""
+var number = ""
 
 $(document).ready(function() {
     refresh()
+    $('#start_date').datepicker({ dateFormat: 'yy/mm/dd' })
+    $('#end_date').datepicker({ dateFormat: 'yy/mm/dd' })
 })
 
-database.ref('/實施主軸').once('value').then(function(snapshot) {
-    $('#show_select').append ("<div class = 'ui segment' id = 'date_seg'><div class = 'ui top left attached large label'>設定日期範圍</div></div>")
+database.ref('/實施主軸/106/H106-AB01').once('value').then(function(snapshot) {
     $('#show_select').append ("<div class = 'ui segment' id = 'use_seg'><div class = 'ui top left attached large label'>實施主軸</div></div>")
     snapshot.forEach(function(snap) {
         $('#use_seg').append ("<div class = 'ui checkbox' id = 'cb"+ snap.val() +"'><input type = 'checkbox' checked = ''><label>" + snap.val() + "</label></div><br>")
@@ -38,7 +41,6 @@ database.ref('/實施主軸').once('value').then(function(snapshot) {
             })
         })
     })
-    console.log(cb_count.items)
 })
 
 database.ref('/請購類別').once('value').then(function(snapshot) {
@@ -56,6 +58,31 @@ database.ref('/請購類別').once('value').then(function(snapshot) {
     })
 })
 
+$('#start_date').change(function() {
+    show_count('start', 'date')
+})
+
+$('#end_date').change(function() {
+    show_count('end', 'date')
+})
+
+$('#clr_btn').click(function() {
+
+    $('#start_date').val('')
+    $('#end_date').val('')
+
+    show_count('clr', 'date')
+})
+
+$('#not_filled_cb').checkbox({
+    onChecked: function() {
+        show_count("filled", "cb")
+    },
+    onUnchecked: function() {
+        show_count("filled", "cb")
+    }
+})
+
 function show_count(e, str) {
 
     for (i in cb_count.items) {
@@ -71,10 +98,41 @@ function show_count(e, str) {
             else if (str == 'hide')
                 cb_count.items[i].count--
         
-        if (cb_count.items[i].count == 2)
-            $("#"+ cb_count.items[i].use_id + cb_count.items[i].buy_id +"").show()
+        var get_item =  $("#"+ cb_count.items[i].use_id + cb_count.items[i].buy_id +"")
+        
+        if (cb_count.items[i].count == 2) {
+            get_item.show()
+            if ($('#start_date').val() != "" && $('#end_date').val() != "") {
+                if(get_item.length > 0) {
+                    for (j = 0; j < get_item.length; j++) {
+                        var start_date = new Date($('#start_date').val())
+                        var end_date = new Date($('#end_date').val())
+                        var item_date = new Date(get_item[j].cells[0].innerHTML)
+
+                        if (item_date < start_date || item_date > end_date)
+                            $(get_item[j]).hide()
+                    }
+                }
+            }
+
+            var is_filled
+            if ($('#not_filled_cb').checkbox('is checked')) {
+                if(get_item.length > 0) {
+                    for (j = 0; j < get_item.length; j++) {
+                        is_filled = true
+                        for (k = 0; k < get_item[j].cells.length; k++) {
+                            if (get_item[j].cells[k].innerHTML == "")
+                                is_filled = false
+                        }
+                        if (is_filled)
+                            $(get_item[j]).hide()
+                    }
+                }
+            }
+        }
+
         if (cb_count.items[i].count < 2)
-            $("#"+ cb_count.items[i].use_id + cb_count.items[i].buy_id +"").hide()
+            get_item.hide()
     }
 }
 
@@ -95,26 +153,88 @@ function getCookie(cname) {
 }
 
 function refresh() {
-    $('#report_table > tbody').empty()
+    $('#start_date').val('')
+    $('#end_date').val('')
+    $('.checkbox').checkbox('check')
+    $('#not_filled_cb').checkbox('uncheck')
     is_changed = false
+    year = ""
+    number = ""
+    update_year()
+    update_number()
+    update_report()
+}
+
+function update_year() {
     $('#load_edit').show()
-    database.ref('/users').once('value').then(function(users) {
-        user_count = 1
-        users.forEach(function(u) {
-            if (user == u.val()['account']) {
-                var c = user_count
-                database.ref('users/'+ c +'/報表').once('value').then (
-                    function(snapshot) {
-                        snapshot.forEach(function(snap) {
-                            $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val()['實施主軸'] + snap.val()['請購類別'] +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ snap.val()['建檔日期'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購編號'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['實施主軸'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購類別'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購項目'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購金額'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['傳票號碼'] +'</td><td><button class = "ui red basic button" onclick = "remove_edit(\''+ snap.val()['請購編號'] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button></td></tr>')
-                        })
-                        $('#load_edit').hide()
-                    }
-                )
+    $('#year_menu').empty()
+    database.ref('/年度').once('value').then (function(snapshot) {
+        var i = 1
+        while (snapshot.val()[i]) {
+            $('#year_drop').find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i] + "</div>")
+            i++
+        }
+        $('#year_drop').dropdown({
+            onChange: function() {
+                year = $('#year_drop').dropdown('get value')
+                $('#number_drop').dropdown('clear')
+                number = ""
+                update_number()
             }
-            user_count++
         })
+        $('#load_edit').hide()
     })
+}
+
+function update_number() {
+    
+    $('#number_menu').empty()
+
+    if (year != "") {
+        $('#load_edit').show()
+        database.ref('/會編/' + year).once('value').then (function(snapshot) {
+            var i = 1
+            if (snapshot.val()[i]) {
+                while (snapshot.val()[i]) {
+                    $('#number_drop').find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i] + "</div>")
+                    i++
+                }
+            }
+            $('#number_drop').dropdown({
+                onChange: function() {
+                    number = $('#number_drop').dropdown('get value')
+                    update_report()
+                }
+            })
+            $('#load_edit').hide()
+        })
+    }
+}
+
+/* not done **/
+function update_report() {
+    $('#report_table > tbody').empty()
+    $('#load_edit').show()
+    
+    if (year != "" && number != "") {
+        database.ref('/users').once('value').then(function(users) {
+            user_count = 1
+            users.forEach(function(u) {
+                if (user == u.val()['account']) {
+                    var c = user_count
+                    database.ref('users/' + c + '/' + year + '/' + number + '/報表').once('value').then (
+                        function(snapshot) {
+                            snapshot.forEach(function(snap) {
+                                $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val()['實施主軸'] + snap.val()['請購類別'] +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ snap.val()['建檔日期'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購編號'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['實施主軸'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購類別'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購項目'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購金額'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['傳票號碼'] +'</td><td><button class = "ui red basic button" onclick = "remove_edit(\''+ snap.val()['請購編號'] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button></td></tr>')
+                            })
+                            $('#load_edit').hide()
+                        }
+                    )
+                }
+                user_count++
+            })
+        })
+    }
 }
 
 function edit_change(){
@@ -166,11 +286,12 @@ $('.ui.ok.button').click(function(e) {
         users.forEach(function(u) {
             if (user == u.val()['account']) {
                 var c = user_count
-                updates['users/'+ c +'/報表'] = data
+                updates['users/'+ c + '/' + year + '/' + number + '/報表'] = data
                 database.ref().update(updates).then(function() {
                     is_changed = false
                     $('#load_edit').hide()
                     $('#success').modal('show')
+                    refresh()
                 }).catch(function(err) {
                     console.log('Edit failed.' + err)
                     is_changed = false
