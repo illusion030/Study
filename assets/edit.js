@@ -18,45 +18,62 @@ var year = ""
 var number = ""
 
 $(document).ready(function() {
-    refresh()
-    $('#start_date').datepicker({ dateFormat: 'yy/mm/dd' })
-    $('#end_date').datepicker({ dateFormat: 'yy/mm/dd' })
+    if (!user) {
+        alert('請先登入')
+        window.location = './index.html'
+    } else {
+        year = ""
+        number = ""
+        $('#start_date').datepicker({ dateFormat: 'yy/mm/dd' })
+        $('#end_date').datepicker({ dateFormat: 'yy/mm/dd' })
+        check_account()
+        update_year()
+        update_number()
+        update_usecb()
+        update_buycb()
+        update_report()
+    }
 })
 
-database.ref('/實施主軸/106/H106-AB01').once('value').then(function(snapshot) {
-    $('#show_select').append ("<div class = 'ui segment' id = 'use_seg'><div class = 'ui top left attached large label'>實施主軸</div></div>")
-    snapshot.forEach(function(snap) {
-        $('#use_seg').append ("<div class = 'ui checkbox' id = 'cb"+ snap.val() +"'><input type = 'checkbox' checked = ''><label>" + snap.val() + "</label></div><br>")
-        $('#cb'+ snap.val()).checkbox({
-            onChecked: function() {
-                show_count($(this.nextSibling.firstChild)[0].textContent, 'show')
-            },
-            onUnchecked: function() {
-                show_count($(this.nextSibling.firstChild)[0].textContent, 'hide')
-            }
-        })
-        database.ref('/請購類別').once('value').then(function(buy) {
-            buy.forEach(function(b) {
-                cb_count.items.push({use_id: snap.val(), buy_id: b.val(), count: 2})
-            })
-        })
-    })
-})
+/****************** get user account ****************/
+function getCookie(cname) {
+    var name = cname + "="
+    var decodedCookie = decodeURIComponent(document.cookie)
+    var ca = decodedCookie.split(';')
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i]
+        while(c.charAt(0) == ' ') {
+            c = c.substring(1)
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length)
+        }
+    }
+    return ""
+}
 
-database.ref('/請購類別').once('value').then(function(snapshot) {
-    $('#show_select').append ("<div class = 'ui segment' id = 'buy_seg'><div class = 'ui top left attached large label'>請購類別</div></div>")
-    snapshot.forEach(function(snap) {
-        $('#buy_seg').append ("<div class = 'ui checkbox' id = 'cb"+ snap.val() +"'><input type = 'checkbox' checked = ''><label>" + snap.val() + "</label></div><br>")
-        $('#cb'+ snap.val()).checkbox({
-            onChecked: function() {
-                show_count($(this.nextSibling.firstChild)[0].textContent, 'show')
-            },
-            onUnchecked: function() {
-                show_count($(this.nextSibling.firstChild)[0].textContent, 'hide')
+function check_account() {
+    $('#load_edit').show()
+    database.ref('/users').once('value').then(function(users) {
+         user_count = 1
+         users.forEach(function(u) {
+            if (user == u.val()['account']) {
+                c = user_count
+                database.ref('/users/'+ c +'/admin').once('value').then (
+                    function(snapshot) {
+                          if (snapshot.val()) {
+                            $('#toindex').before("<a href = './admin.html' class = 'large item'> 管理 </a>")
+                        }
+                    }
+                )
             }
+            user_count++
         })
+        $('#load_edit').hide()
     })
-})
+}
+
+/**************** selection ***********************/
 
 $('#start_date').change(function() {
     show_count('start', 'date')
@@ -136,34 +153,7 @@ function show_count(e, str) {
     }
 }
 
-function getCookie(cname) {
-    var name = cname + "="
-    var decodedCookie = decodeURIComponent(document.cookie)
-    var ca = decodedCookie.split(';')
-    for(var i = 0; i < ca.length; i++) {
-        var c = ca[i]
-        while(c.charAt(0) == ' ') {
-            c = c.substring(1)
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length)
-        }
-    }
-    return ""
-}
-
-function refresh() {
-    $('#start_date').val('')
-    $('#end_date').val('')
-    $('.checkbox').checkbox('check')
-    $('#not_filled_cb').checkbox('uncheck')
-    is_changed = false
-    year = ""
-    number = ""
-    update_year()
-    update_number()
-    update_report()
-}
+/*********** update function *****************/
 
 function update_year() {
     $('#load_edit').show()
@@ -199,24 +189,24 @@ function update_number() {
                     $('#number_drop').find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i] + "</div>")
                     i++
                 }
+                $('#number_drop').dropdown({
+                    onChange: function() {
+                        number = $('#number_drop').dropdown('get value')
+                        update_usecb()
+                        update_report()
+                    }
+                })
             }
-            $('#number_drop').dropdown({
-                onChange: function() {
-                    number = $('#number_drop').dropdown('get value')
-                    update_report()
-                }
-            })
             $('#load_edit').hide()
         })
     }
 }
 
-/* not done **/
 function update_report() {
     $('#report_table > tbody').empty()
-    $('#load_edit').show()
     
     if (year != "" && number != "") {
+        $('#load_edit').show()
         database.ref('/users').once('value').then(function(users) {
             user_count = 1
             users.forEach(function(u) {
@@ -227,24 +217,70 @@ function update_report() {
                             snapshot.forEach(function(snap) {
                                 $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val()['實施主軸'] + snap.val()['請購類別'] +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ snap.val()['建檔日期'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購編號'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['實施主軸'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購類別'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購項目'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購金額'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['傳票號碼'] +'</td><td><button class = "ui red basic button" onclick = "remove_edit(\''+ snap.val()['請購編號'] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button></td></tr>')
                             })
-                            $('#load_edit').hide()
                         }
                     )
                 }
                 user_count++
             })
+            $('#start_date').val('')
+            $('#end_date').val('')
+            $('.checkbox').checkbox('check')
+            $('#not_filled_cb').checkbox('uncheck')
+            is_changed = false
+            $('#load_edit').hide()
         })
     }
 }
 
-function edit_change(){
-    is_changed = true
+function update_usecb() {
+
+    $('#use_seg').empty()
+    $('#use_seg').append ("<div class = 'ui top left attached large label'>實施主軸</div>")
+    $('#load_edit').show()
+
+    if (year != "" && number != "") {
+        $('#load_edit').show()
+        database.ref('/實施主軸/' + year + '/' + number + '').once('value').then(function(snapshot) {
+            snapshot.forEach(function(snap) {
+                $('#use_seg').append ("<div class = 'ui checkbox' id = 'cb"+ snap.val() +"'><input type = 'checkbox' checked = ''><label>" + snap.val() + "</label></div><br>")
+                $('#cb'+ snap.val()).checkbox({
+                    onChecked: function() {
+                        show_count($(this.nextSibling.firstChild)[0].textContent, 'show')
+                    },
+                    onUnchecked: function() {
+                        show_count($(this.nextSibling.firstChild)[0].textContent, 'hide')
+                    }
+                })
+                database.ref('/請購類別').once('value').then(function(buy) {
+                    buy.forEach(function(b) {
+                        cb_count.items.push({use_id: snap.val(), buy_id: b.val(), count: 2})
+                    })
+                })
+            })
+            $('#load_edit').hide()
+        })
+    }
 }
 
-function remove_edit(e) {
-    $('#' + e + '').remove()
-    is_changed = true
+function update_buycb() {
+    
+    database.ref('/請購類別').once('value').then(function(snapshot) {
+        $('#show_select').append ("<div class = 'ui segment' id = 'buy_seg'><div class = 'ui top left attached large label'>請購類別</div></div>")
+        snapshot.forEach(function(snap) {
+            $('#buy_seg').append ("<div class = 'ui checkbox' id = 'cb"+ snap.val() +"'><input type = 'checkbox' checked = ''><label>" + snap.val() + "</label></div><br>")
+            $('#cb'+ snap.val()).checkbox({
+                onChecked: function() {
+                    show_count($(this.nextSibling.firstChild)[0].textContent, 'show')
+                },
+                onUnchecked: function() {
+                    show_count($(this.nextSibling.firstChild)[0].textContent, 'hide')
+                }
+            })
+        })
+    })
 }
+
+/******** edit ********************/
 
 $('#edit_save').click(function(e) {
     
@@ -259,7 +295,7 @@ $('#edit_save').click(function(e) {
 $('#edit_refresh').click(function(e) {
 
     e.preventDefault()
-    refresh()    
+    update_report()
 })
 
 $('.ui.ok.button').click(function(e) {
@@ -291,7 +327,7 @@ $('.ui.ok.button').click(function(e) {
                     is_changed = false
                     $('#load_edit').hide()
                     $('#success').modal('show')
-                    refresh()
+                    update_report()
                 }).catch(function(err) {
                     console.log('Edit failed.' + err)
                     is_changed = false
@@ -303,3 +339,12 @@ $('.ui.ok.button').click(function(e) {
         })
     })
 })
+
+function edit_change(){
+    is_changed = true
+}
+
+function remove_edit(e) {
+    $('#' + e + '').remove()
+    is_changed = true
+}

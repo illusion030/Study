@@ -18,14 +18,20 @@ var number = ""
 /**********  Report  **********/
 
 $(document).ready(function() {
-    update_year()
-    update_number()
-    update_use()
-    update_buy()
-    $('#report_date').datepicker({ dateFormat: 'yy/mm/dd' })
-    $('#report_date').datepicker('setDate', new Date())
-    $('#buy_money').val('NT$0')
-    $('.modal').modal('setting', 'closable', false)
+    if (!user) {
+        alert('尚未登入')
+        window.location = './'
+    } else {
+        check_account()
+        update_year()
+        update_number()
+        update_use()
+        update_buy()
+        $('#report_date').datepicker({ dateFormat: 'yy/mm/dd' })
+        $('#report_date').datepicker('setDate', new Date())
+        $('#buy_money').val('NT$0')
+        $('.modal').modal('setting', 'closable', false)
+    }
 })
 
 function getCookie(cname) {
@@ -51,7 +57,26 @@ $('#buy_money').focusout(function() {
     }
 })
 
-
+function check_account() {
+    $('#load_report').show()
+    database.ref('/users').once('value').then(function(users) {
+        user_count = 1
+        users.forEach(function(u) {
+            if (user == u.val()['account']) {
+                c = user_count
+                database.ref('/users/'+ c +'/admin').once('value').then (
+                    function(snapshot) {
+                        if (snapshot.val()) {
+                            $('#toindex').before("<a href = './admin.html' class = 'large item'> 管理 </a>")
+                        }
+                    }
+                )
+            }
+            user_count++
+        })
+        $('#load_report').hide()
+    })
+}
 
 function update_year() {
     $('#load_report').show()
@@ -102,13 +127,14 @@ function update_number() {
                 $('#load_report').hide()
             }
         )
-    }
+    } else
+        $('#load_report').hide()
 }
 
 function update_use() {
-    $('#load_report').show()
     $('#use_menu').empty()
-    if (number != "") {
+    if (year != "" && number != "") {
+        $('#load_report').show()
         database.ref('/實施主軸/' + year + '/' + number).once('value').then (
             function(snapshot) {
                 var i = 1
@@ -122,7 +148,8 @@ function update_use() {
                 $('#load_report').hide()
             }
         )
-    }
+    } else
+        $('#load_report').hide()
 }
 
 function update_buy() {
@@ -484,7 +511,7 @@ function button_up(e) {
 }
 
 $('#cancel').click(function(e){
-      e.preventDefault()
+    e.preventDefault()
 })
 
 /***************************************************/

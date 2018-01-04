@@ -10,22 +10,22 @@ var config = {
 firebase.initializeApp(config);
 
 var database = firebase.database();
+var is_changed = false
 var user = getCookie('account')
 var user_count
 var cb_count = {items: []}
-var year
-var number
+var year = ""
+var number = ""
 
-$(document).ready(function(){
+$(document).ready(function() {
     if (!user) {
-        alert('尚未登入')
+        alert('請先登入')
         window.location = './index.html'
     } else {
         year = ""
         number = ""
         $('#start_date').datepicker({ dateFormat: 'yy/mm/dd' })
         $('#end_date').datepicker({ dateFormat: 'yy/mm/dd' })
-        check_account()
         update_year()
         update_number()
         update_usecb()
@@ -34,7 +34,7 @@ $(document).ready(function(){
     }
 })
 
-/************** get user account  *************/
+/****************** get user account ****************/
 function getCookie(cname) {
     var name = cname + "="
     var decodedCookie = decodeURIComponent(document.cookie)
@@ -51,28 +51,7 @@ function getCookie(cname) {
     return ""
 }
 
-function check_account() {
-    $('#load_show').show()
-    database.ref('/users').once('value').then(function(users) {
-        user_count = 1
-        users.forEach(function(u) {
-            if (user == u.val()['account']) {
-                c = user_count
-                database.ref('/users/'+ c +'/admin').once('value').then (
-                    function(snapshot) {
-                        if (snapshot.val()) {
-                            $('#toindex').before("<a href = './admin.html' class = 'large item'> 管理 </a>")
-                        }
-                    }
-                )
-            }
-            user_count++
-        })
-        $('#load_show').hide()
-    })
-}
-
-/**************  selection  ****************/
+/**************** selection ***********************/
 
 $('#start_date').change(function() {
     show_count('start', 'date')
@@ -83,30 +62,39 @@ $('#end_date').change(function() {
 })
 
 $('#clr_btn').click(function() {
-    
+
     $('#start_date').val('')
     $('#end_date').val('')
-    
+
     show_count('clr', 'date')
 })
 
+$('#not_filled_cb').checkbox({
+    onChecked: function() {
+        show_count("filled", "cb")
+    },
+    onUnchecked: function() {
+        show_count("filled", "cb")
+    }
+})
+
 function show_count(e, str) {
+
     for (i in cb_count.items) {
-        if(e == cb_count.items[i].use_id)
-            if(str == 'show')
+        if (e == cb_count.items[i].use_id)
+            if (str == 'show')
                 cb_count.items[i].count++
-            else if(str == 'hide')
+            else if (str == 'hide')
                 cb_count.items[i].count--
-
-        if(e == cb_count.items[i].buy_id)
-            if(str == 'show')
+        
+        if (e == cb_count.items[i].buy_id)            
+            if (str == 'show')
                 cb_count.items[i].count++
-            else if(str == 'hide')
+            else if (str == 'hide')
                 cb_count.items[i].count--
-
-        //use id to get item
+        
         var get_item =  $("#"+ cb_count.items[i].use_id + cb_count.items[i].buy_id +"")
-
+        
         if (cb_count.items[i].count == 2) {
             get_item.show()
             if ($('#start_date').val() != "" && $('#end_date').val() != "") {
@@ -115,14 +103,27 @@ function show_count(e, str) {
                         var start_date = new Date($('#start_date').val())
                         var end_date = new Date($('#end_date').val())
                         var item_date = new Date(get_item[j].cells[0].innerHTML)
-                        
+
                         if (item_date < start_date || item_date > end_date)
                             $(get_item[j]).hide()
                     }
                 }
             }
-            
-            $("#"+ cb_count.items[i].use_id +"").show()
+
+            var is_filled
+            if ($('#not_filled_cb').checkbox('is checked')) {
+                if(get_item.length > 0) {
+                    for (j = 0; j < get_item.length; j++) {
+                        is_filled = true
+                        for (k = 0; k < get_item[j].cells.length; k++) {
+                            if (get_item[j].cells[k].innerHTML == "")
+                                is_filled = false
+                        }
+                        if (is_filled)
+                            $(get_item[j]).hide()
+                    }
+                }
+            }
         }
 
         if (cb_count.items[i].count < 2)
@@ -130,10 +131,10 @@ function show_count(e, str) {
     }
 }
 
-/**************  update function  ****************/
+/*********** update function *****************/
 
 function update_year() {
-    $('#load_show').show()
+    $('#load_edit').show()
     $('#year_menu').empty()
     database.ref('/年度').once('value').then (function(snapshot) {
         var i = 1
@@ -149,15 +150,16 @@ function update_year() {
                 update_number()
             }
         })
-        $('#load_show').hide()
+        $('#load_edit').hide()
     })
 }
 
 function update_number() {
+    
     $('#number_menu').empty()
 
     if (year != "") {
-        $('#load_show').show()
+        $('#load_edit').show()
         database.ref('/會編/' + year).once('value').then (function(snapshot) {
             var i = 1
             if (snapshot.val()[i]) {
@@ -173,26 +175,25 @@ function update_number() {
                     }
                 })
             }
-            $('#load_show').hide()
+            $('#load_edit').hide()
         })
     }
 }
 
 function update_report() {
-   
     $('#report_table > tbody').empty()
-
+    
     if (year != "" && number != "") {
         $('#load_edit').show()
         database.ref('/users').once('value').then(function(users) {
             user_count = 1
             users.forEach(function(u) {
                 if (user == u.val()['account']) {
-                    c = user_count
+                    var c = user_count
                     database.ref('users/' + c + '/' + year + '/' + number + '/報表').once('value').then (
                         function(snapshot) {
                             snapshot.forEach(function(snap) {
-                                $('#report_table tr:contains("'+ snap.val()['實施主軸'] +'")').after('<tr id = "'+ snap.val()['實施主軸'] + snap.val()['請購類別']+'"><td>'+ snap.val()['建檔日期'] +'</td><td>'+ snap.val()['請購編號'] +'</td><td>'+ snap.val()['請購類別'] +'</td><td>'+ snap.val()['請購項目'] +'</td><td>'+ snap.val()['請購金額'] +'</td><td>'+ snap.val()['傳票號碼'] +'</td></tr>')
+                                $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val()['實施主軸'] + snap.val()['請購類別'] +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ snap.val()['建檔日期'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購編號'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['實施主軸'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購類別'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購項目'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購金額'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['傳票號碼'] +'</td><td><button class = "ui red basic button" onclick = "remove_edit(\''+ snap.val()['請購編號'] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button></td></tr>')
                             })
                         }
                     )
@@ -202,7 +203,9 @@ function update_report() {
             $('#start_date').val('')
             $('#end_date').val('')
             $('.checkbox').checkbox('check')
-            $('#load_show').hide()
+            $('#not_filled_cb').checkbox('uncheck')
+            is_changed = false
+            $('#load_edit').hide()
         })
     }
 }
@@ -211,22 +214,19 @@ function update_usecb() {
 
     $('#use_seg').empty()
     $('#use_seg').append ("<div class = 'ui top left attached large label'>實施主軸</div>")
+    $('#load_edit').show()
 
     if (year != "" && number != "") {
-
-        $('#load_show').show()
-
+        $('#load_edit').show()
         database.ref('/實施主軸/' + year + '/' + number + '').once('value').then(function(snapshot) {
             snapshot.forEach(function(snap) {
                 $('#use_seg').append ("<div class = 'ui checkbox' id = 'cb"+ snap.val() +"'><input type = 'checkbox' checked = ''><label>" + snap.val() + "</label></div><br>")
-                $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val() +'" class = "print_tr"><td colspan = "6" align = "center">'+ snap.val() +'</td></tr>')
                 $('#cb'+ snap.val()).checkbox({
                     onChecked: function() {
                         show_count($(this.nextSibling.firstChild)[0].textContent, 'show')
                     },
                     onUnchecked: function() {
                         show_count($(this.nextSibling.firstChild)[0].textContent, 'hide')
-                        $("#"+ $(this.nextSibling.firstChild)[0].textContent+ "").hide()
                     }
                 })
                 database.ref('/請購類別').once('value').then(function(buy) {
@@ -235,7 +235,7 @@ function update_usecb() {
                     })
                 })
             })
-            $('#load_show').hide()
+            $('#load_edit').hide()
         })
     }
 }
@@ -255,27 +255,74 @@ function update_buycb() {
                 }
             })
         })
-    
-        $('#show_select').append ("<br><button class = 'ui blue basic button' onclick = 'print_screen($(\"#print_table\"))'>列印</button><br>")
     })
 }
 
-/**************  print  ****************/
+/******** edit ********************/
 
-function print_screen(e) {
-    $('#report_table').attr('width', '1000px')
-    var value = $('#print_table').html()
+$('#edit_save').click(function(e) {
+    
+    e.preventDefault()
+    
+    if (is_changed) 
+        $('#check_edit').modal('show')
+    else
+        $('#no_change').modal('show')
+})
 
-    var print_page = window.open('', 'PRINT', 'height=400,eidth=600')
-    print_page.document.write('<HTML><head><title> Report </title></head><body>')
-    print_page.document.write(value)
-    print_page.document.write('<style type = "text/css">@media print{ .print_tr td { background-color: #F2FFFF !important; -webkit-print-color-adjust: exact;}}</style></body></html>')
-    
-    print_page.document.close()
-    print_page.focus()
-    
-    print_page.print()
-    print_page.close()
-    
-    $('#report_table').attr('width', '1200px')
+$('#edit_refresh').click(function(e) {
+
+    e.preventDefault()
+    update_report()
+})
+
+$('.ui.ok.button').click(function(e) {
+
+    var i = 1
+    var updates = {}
+    var data = {}
+
+    $('#report_table > tbody > tr').each(function(i, item) {
+        data[i+1] = {
+            '建檔日期':item.cells[0].innerHTML,
+            '請購編號':item.cells[1].innerHTML,
+            '實施主軸':item.cells[2].innerHTML,
+            '請購類別':item.cells[3].innerHTML,
+            '請購項目':item.cells[4].innerHTML,
+            '請購金額':item.cells[5].innerHTML,
+            '傳票號碼':item.cells[6].innerHTML
+        }
+    })
+
+    $('#load_edit').show()
+    database.ref('/users').once('value').then(function(users) {
+        user_count = 1
+        users.forEach(function(u) {
+            if (user == u.val()['account']) {
+                var c = user_count
+                updates['users/'+ c + '/' + year + '/' + number + '/報表'] = data
+                database.ref().update(updates).then(function() {
+                    is_changed = false
+                    $('#load_edit').hide()
+                    $('#success').modal('show')
+                    update_report()
+                }).catch(function(err) {
+                    console.log('Edit failed.' + err)
+                    is_changed = false
+                    $('#load_edit').hide()
+                    $('#failed').modal('show')
+                })
+            }
+            user_count++
+        })
+    })
+})
+
+function edit_change(){
+    is_changed = true
+}
+
+function remove_edit(e) {
+    $('#' + e + '').remove()
+    is_changed = true
 }

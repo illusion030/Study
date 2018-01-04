@@ -14,7 +14,23 @@
             <a href = "./report.html" class = "large item"> 輸入 </a>
             <a href = "./edit.html" class = "large item"> 編輯 </a>
             <a href = "./show.html" class = "large item"> 顯示 </a>
-            <a href = "./" class = "right aligned large item"> 首頁 </a>
+            <div class = "ui selection dropdown item" id = "year_drop">
+                <input type = "hidden" id = "year">
+                <i class = "dropdown icon"></i>
+                <div class = "default text">年度</div>
+                <div class = "menu" id = "year_menu">
+                </div>
+            </div>
+            <div class = "ui selection dropdown item" id = "number_drop">
+                <input type = "hidden" id = "number">
+                <i class = "dropdown icon"></i>
+                <div class = "default text">會編</div>
+                <div class = "menu" id = "number_menu">
+                </div>
+            </div>
+            <div class = "right menu">
+                <a href = "./" class = "large item" id = "toindex"> 首頁 </a>
+            </div>
         </div>
 
         <div class = "ui inverted active dimmer" id = "load_show">
@@ -40,18 +56,23 @@
                             <button type = "button" class = "ui button" id = "clr_btn"> 清空 </button>
                         </form>
                     </div>
+                    <div class = 'ui segment' id = 'use_seg'></div>
                 </div>
                 <div class = "twelve wide column">
                     <div id = "print_table">
                     <table id = "report_table" border = "1" width = "1200px" class = "ui celled table">
-                        <tr>
-                            <th> 建檔日期 </th>
-                            <th> 請購編號 </th>
-                            <th> 請購類別 </th>
-                            <th> 請購項目 </th>
-                            <th> 請購金額 </th>
-                            <th> 傳票號碼 </th>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th> 建檔日期 </th>
+                                <th> 請購編號 </th>
+                                <th> 請購類別 </th>
+                                <th> 請購項目 </th>
+                                <th> 請購金額 </th>
+                                <th> 傳票號碼 </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
                     </table>
                     </div>
                 </div>

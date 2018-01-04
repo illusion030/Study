@@ -7,13 +7,16 @@ var config = {
     storageBucket: "study-c1f03.appspot.com",
     messagingSenderId: "1098207976094"
 };
-        firebase.initializeApp(config);
+firebase.initializeApp(config);
+
+var database = firebase.database();
 var is_login
+var user = getCookie('account')
 
 $(document).ready(function() {
     $('.modal').modal('setting', 'closable', false)
     checkCookie()
-    $('#load_index').hide()
+    check_account()
 })
 
 function setCookie(cname, cvalue) {
@@ -37,17 +40,17 @@ function getCookie(cname) {
 }
 
 function checkCookie() {
-    var user = getCookie("account")
+    user = getCookie('account')
     if (user != "") {
         $('#container').html("<div class = 'ui padded center aligned container'><p>現在帳號為: "+ user +"</p><button class = 'ui button' id = 'logout_btn'>登出</button></div>")
         $('#logout_btn').click(function() {
             setCookie('account', '')
             checkCookie()
+            $('#admin_btn').remove()
             $('#logout_success').modal('show')
         })
     } else {
         $('#container').html("<div class = 'ui padded left aligned text container'><form id = 'login_form' class = 'ui form'><label class = 'ui large label'>帳號</label><input type = 'text' id = 'account'></input><br><br><label class = 'ui large label'>密碼</label><input type = 'password' id = 'pwd'></input><br><br></form><button class = 'ui right floated button' id = 'reg_btn'>註冊</button><button class = 'ui right floated button' id = 'login_btn'>登入</button></div>")
-        var database = firebase.database();
         $('#login_btn').click(function() {
             is_login = false
             $('#load_index').show()
@@ -63,6 +66,7 @@ function checkCookie() {
                         $("#login_success").modal('show')
                         setCookie("account", $('#account').val())
                         checkCookie()
+                        check_account()
                     } else {
                         $("#login_failed").modal('show')
                     }
@@ -85,9 +89,32 @@ function checkCookie() {
     }
 }
 
+function check_account() {
+    
+    $('#load_index').show()
+
+    database.ref('/users').once('value').then(function(users) {
+        user_count = 1
+        users.forEach(function(u) {
+            if (user == u.val()['account']) {
+                c = user_count
+                database.ref('/users/'+ c +'/admin').once('value').then (
+                    function(snapshot) {
+                        if (snapshot.val()) {
+                            $('#toindex').before("<a href = './admin.html' class = 'large item' id = 'admin_btn'> 管理 </a>")
+                        }
+                    }
+                )
+            }
+            user_count++
+        })
+        $('#load_index').hide()
+    })
+}
+
 $('#go_to_input').click(function() {
     
-    var user = getCookie('account')
+    user = getCookie('account')
     if (user != "") {
         window.location = './report.html'
     } else {
@@ -97,7 +124,7 @@ $('#go_to_input').click(function() {
 
 $('#go_to_edit').click(function() {
 
-    var user = getCookie('account')
+    user = getCookie('account')
     if (user != "") {
         window.location = './edit.html'
     } else {
@@ -108,7 +135,7 @@ $('#go_to_edit').click(function() {
 
 $('#go_to_show').click(function() {
 
-    var user = getCookie('account')
+    user = getCookie('account')
     if (user != "") {
         window.location = './show.html'
     } else {
@@ -119,7 +146,6 @@ $('#go_to_show').click(function() {
 
 $('#reg_ok').click(function(e) {
     e.preventDefault()
-    var database = firebase.database()
     var repeat_acc = false
 
     if ($('#reg_acc').val() == "" || $('#reg_pwd').val() == "") {
