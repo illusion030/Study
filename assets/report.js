@@ -234,7 +234,7 @@ $('#edit_year').click(function(e) {
         function(snapshot) {
             var i = 1
             while (snapshot.val()[i]) {
-                $("#year_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><button class = "ui red basic button" onclick = "remove_year(\''+ snapshot.val()[i] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green basic right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+                $("#year_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><div class = "ui buttons"><div class = "ui green basic animated vertical button" onclick = "button_up(this)"><div class = "visible content">上移</div><div class = "hidden content"><i class = "angle double up large icon"></i></div></div><div class = "ui green basic animated vertical button" onclick = "button_down(this)"><div class = "visible content">下移</div><div class = "hidden content"><i class = "angle double down large icon"></i></div></div><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ snapshot.val()[i] +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
                 i++
             }
             $('#year_modal').modal('show')
@@ -248,7 +248,7 @@ $('#add_year').click(function(e) {
     var item = $('#add_year_input').val()
     
     if (item) { 
-        $("#year_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable="true">'+ item +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ item +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green basic right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+        $("#year_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable = "true">'+ item +'</td><td><div class = "ui buttons"><div class = "ui green basic animated vertical button" onclick = "button_up(this)"><div class = "visible content">上移</div><div class = "hidden content"><i class = "angle double up large icon"></i></div></div><div class = "ui green basic animated vertical button" onclick = "button_down(this)"><div class = "visible content">下移</div><div class = "hidden content"><i class = "angle double down large icon"></i></div></div><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ item +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
         $('#add_year_input').val('')
     }
 })
@@ -296,19 +296,20 @@ $('#edit_number').click(function(e) {
     e.preventDefault()
 
     $('#number_table > tbody').empty()
-
-    database.ref('/會編/' + year).once('value').then (
-        function(snapshot) {
-            var i = 1
-            if (snapshot.val()) {
-                while (snapshot.val()[i]) {
-                    $("#number_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ snapshot.val()[i] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green basic right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
-                    i++
+    if (year != "") {
+        database.ref('/會編/' + year).once('value').then (
+            function(snapshot) {
+                var i = 1
+                if (snapshot.val()) {
+                    while (snapshot.val()[i]) {
+                        $("#number_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><div class = "ui buttons"><div class = "ui green basic animated vertical button" onclick = "button_up(this)"><div class = "visible content">上移</div><div class = "hidden content"><i class = "angle double up large icon"></i></div></div><div class = "ui green basic animated vertical button" onclick = "button_down(this)"><div class = "visible content">下移</div><div class = "hidden content"><i class = "angle double down large icon"></i></div></div><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ snapshot.val()[i] +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
+                        i++
+                    }
                 }
+                $('#number_modal').modal('show')
             }
-            $('#number_modal').modal('show')
-        }
-    )
+        )
+    }
     
 })
 
@@ -317,7 +318,7 @@ $('#add_number').click(function(e) {
     var item = $('#add_number_input').val()
     
     if (item) { 
-        $("#number_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable="true">'+ item +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ item +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green basic right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+        $("#number_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable = "true">'+ item +'</td><td><div class = "ui buttons"><div class = "ui green basic animated vertical button" onclick = "button_up(this)"><div class = "visible content">上移</div><div class = "hidden content"><i class = "angle double up large icon"></i></div></div><div class = "ui green basic animated vertical button" onclick = "button_down(this)"><div class = "visible content">下移</div><div class = "hidden content"><i class = "angle double down large icon"></i></div></div><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ item +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
         $('#add_number_input').val('')
     }
 })
@@ -365,20 +366,21 @@ $('#edit_use').click(function(e) {
     e.preventDefault()
 
     $('#use_table > tbody').empty()
-
-    database.ref('/實施主軸/' + year + '/' + number).once('value').then (
-        function(snapshot) {
-            var i = 1
-            if (snapshot.val()) {
-                while (snapshot.val()[i]) {
-                    $("#use_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ snapshot.val()[i] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green basic right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
-                    i++
-                }
-            }
-            $('#use_modal').modal('show')
-        }
-    )
     
+    if (year != "" && number != "") {
+        database.ref('/實施主軸/' + year + '/' + number).once('value').then (
+            function(snapshot) {
+                var i = 1
+                if (snapshot.val()) {
+                    while (snapshot.val()[i]) {
+                        $("#use_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><div class = "ui buttons"><div class = "ui green basic animated vertical button" onclick = "button_up(this)"><div class = "visible content">上移</div><div class = "hidden content"><i class = "angle double up large icon"></i></div></div><div class = "ui green basic animated vertical button" onclick = "button_down(this)"><div class = "visible content">下移</div><div class = "hidden content"><i class = "angle double down large icon"></i></div></div><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ snapshot.val()[i] +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
+                        i++
+                    }
+                }
+                $('#use_modal').modal('show')
+            }
+        )
+    }
 })
 
 $('#add_use').click(function(e) {
@@ -386,7 +388,7 @@ $('#add_use').click(function(e) {
     var item = $('#add_use_input').val()
     
     if (item) { 
-        $("#use_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable="true">'+ item +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ item +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green basic right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+        $("#use_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable = "true">'+ item +'</td><td><div class = "ui buttons"><div class = "ui green basic animated vertical button" onclick = "button_up(this)"><div class = "visible content">上移</div><div class = "hidden content"><i class = "angle double up large icon"></i></div></div><div class = "ui green basic animated vertical button" onclick = "button_down(this)"><div class = "visible content">下移</div><div class = "hidden content"><i class = "angle double down large icon"></i></div></div><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ item +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
         $('#add_use_input').val('')
     }
 })
@@ -440,7 +442,7 @@ $('#edit_buy').click(function(e) {
         function(snapshot) {
             var i = 1
             while (snapshot.val()[i]) {
-                $("#buy_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable="true">'+ snapshot.val()[i] +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ snapshot.val()[i] +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green basic right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+                $("#buy_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><div class = "ui buttons"><div class = "ui green basic animated vertical button" onclick = "button_up(this)"><div class = "visible content">上移</div><div class = "hidden content"><i class = "angle double up large icon"></i></div></div><div class = "ui green basic animated vertical button" onclick = "button_down(this)"><div class = "visible content">下移</div><div class = "hidden content"><i class = "angle double down large icon"></i></div></div><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ snapshot.val()[i] +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
                 i++
             }
             $('#buy_modal').modal('show')
@@ -453,7 +455,7 @@ $('#add_buy').click(function(e) {
     var item = $('#add_buy_input').val()
     
     if (item) { 
-        $("#buy_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable="true">'+ item +'</td><td><button class = "ui red basic button" onclick = "remove_item(\''+ item +'\')"><i class = "remove circle outline large red icon"></i>刪除</button><button class = "circular ui green basic right floated icon button" onclick = "button_down(this)"><i class = "icon angle double down"></i></button><button class = "circular ui green right floated icon button" onclick = "button_up(this)"><i class = "icon angle double up"></i></button></td></tr>')
+        $("#buy_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable = "true">'+ item +'</td><td><div class = "ui buttons"><div class = "ui green basic animated vertical button" onclick = "button_up(this)"><div class = "visible content">上移</div><div class = "hidden content"><i class = "angle double up large icon"></i></div></div><div class = "ui green basic animated vertical button" onclick = "button_down(this)"><div class = "visible content">下移</div><div class = "hidden content"><i class = "angle double down large icon"></i></div></div><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ item +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
         $('#add_buy_input').val('')
     }
 })

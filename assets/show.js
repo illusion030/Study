@@ -256,7 +256,7 @@ function update_buycb() {
             })
         })
     
-        $('#show_select').append ("<br><button class = 'ui blue basic button' onclick = 'print_screen($(\"#print_table\"))'>列印</button><br>")
+        $('#show_select').append ("<br><div class = 'ui blue basic animated vertical button' onclick = 'print_screen($(\"#print_table\"))'><div class = 'visible content'>列印</div><div class = 'hidden content'><i class = 'print icon'></i></div></div><br>")
     })
 }
 

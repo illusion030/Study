@@ -47,7 +47,12 @@
                         </div>
                     </div>
                     <div class = "two wide column">
-                        <button class = "ui medium blue basic button" id = "edit_year"> 修改 </button>
+                        <div class = "ui medium blue basic animated button" id = "edit_year"> 
+                            <div class = "visible content">修改</div>
+                            <div class = "hidden content">
+                                <i class = "large edit icon"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <br>
@@ -64,7 +69,12 @@
                         </div>
                     </div>
                     <div class = "two wide column">
-                        <button class = "ui medium blue basic button" id = "edit_number"> 修改 </button>
+                        <div class = "ui medium blue basic animated button" id = "edit_number"> 
+                            <div class = "visible content">修改</div>
+                            <div class = "hidden content">
+                                <i class = "large edit icon"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <br>
@@ -81,7 +91,12 @@
                         </div>
                     </div>
                     <div class = "two wide column">
-                        <button class = "ui medium blue basic button" id = "edit_use"> 修改 </button>
+                        <div class = "ui medium blue basic animated button" id = "edit_use"> 
+                            <div class = "visible content">修改</div>
+                            <div class = "hidden content">
+                                <i class = "large edit icon"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <br>
@@ -98,7 +113,12 @@
                         </div>
                     </div>
                     <div class = "two wide column">
-                        <button class = "ui medium blue basic button" id = "edit_buy"> 修改 </button>
+                        <div class = "ui medium blue basic animated button" id = "edit_buy"> 
+                            <div class = "visible content">修改</div>
+                            <div class = "hidden content">
+                                <i class = "large edit icon"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <br>
@@ -114,7 +134,12 @@
                 <input type = "text" id = "ticket_num" placeholder = "Type here ...">
                 <br>
                 <br>
-                <button id = "report_save" class = "ui medium blue basic button"> 存檔 </button>
+                <div class = "ui medium blue basic animated vertical button" id = "report_save"> 
+                    <div class = "visible content">存檔</div>
+                    <div class = "hidden content">
+                        <i class = "save icon"></i>
+                    </div>
+                </div>
             </form>
         </div>
         
@@ -162,19 +187,25 @@
             </table>
             <div class = "ui input">
                 <input type = "text" id = "add_year_input" placeholder = "Add item..." style = "width:500px">
-                <button class = "ui blue basic right labeled icon button" id = "add_year">
-                    <i class = "add icon"></i>
-                    Add
-                </button>
+                <div class = "ui blue basic animated button" id = "add_year">
+                    <div class = "visible content"> 加入 </div>
+                    <div class = "hidden content">
+                        <i class = "add icon"></i>
+                    </div>
+                </div>
             </div>
             <div class = "actions">
-                <div class = "ui green ok button" id = "year_save">
-                    <i class = "checkmark icon"></i>
-                        存檔
+                <div class = "ui green ok animated vertical button" id = "year_save">
+                    <div class = "visible content"> 存檔 </div>
+                    <div class = "hidden content">
+                        <i class = "save icon"></i>
+                    </div>
                 </div>
-                <div class = "ui red basic cancel button" id = "year_close">
-                    <i class = "remove icon"></i>
-                        關閉
+                <div class = "ui red basic cancel animated vertical button" id = "year_close">
+                    <div class = "visible content"> 關閉 </div>
+                    <div class = "hidden content">
+                        <i class = "remove icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -189,13 +220,17 @@
                 <p> 確定存檔? </p>
             </div>
             <div class = "actions">
-                <div class = "ui green ok button" id = "year_ok">
-                    <i class = "checkmark icon"></i>
-                    是
+                <div class = "ui green ok animated vertical button" id = "year_ok">
+                    <div class = "visible content"> 是 </div>
+                    <div class = "hidden content">
+                        <i class = "checkmark icon"></i>
+                    </div>
                 </div>
-                <div class = "ui red basic cancel button" id = "year_cancel">
-                    <i class = "remove icon"></i>
-                    否
+                <div class = "ui red basic cancel animated vertical button" id = "year_cancel">
+                    <div class = "visible content"> 否 </div>
+                    <div class = "hidden content">
+                        <i class = "remove icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -224,19 +259,25 @@
             </table>
             <div class = "ui input">
                 <input type = "text" id = "add_number_input" placeholder = "Add item..." style = "width:500px">
-                <button class = "ui blue basic right labeled icon button" id = "add_number">
-                    <i class = "add icon"></i>
-                    Add
-                </button>
+                <div class = "ui blue basic animated button" id = "add_number">
+                    <div class = "visible content"> 加入 </div>
+                    <div class = "hidden content">
+                        <i class = "add icon"></i>
+                    </div>
+                </div>
             </div>
             <div class = "actions">
-                <div class = "ui green ok button" id = "number_save">
-                    <i class = "checkmark icon"></i>
-                        存檔
+                <div class = "ui green ok animated vertical button" id = "number_save">
+                    <div class = "visible content"> 存檔 </div>
+                    <div class = "hidden content">
+                        <i class = "save icon"></i>
+                    </div>
                 </div>
-                <div class = "ui red basic cancel button" id = "number_close">
-                    <i class = "remove icon"></i>
-                        關閉
+                <div class = "ui red basic cancel animated vertical button" id = "number_close">
+                    <div class = "visible content"> 關閉 </div>
+                    <div class = "hidden content">
+                        <i class = "remove icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -251,13 +292,17 @@
                 <p> 確定存檔? </p>
             </div>
             <div class = "actions">
-                <div class = "ui green ok button" id = "number_ok">
-                    <i class = "checkmark icon"></i>
-                    是
+                <div class = "ui green ok animated vertical button" id = "number_ok">
+                    <div class = "visible content"> 是 </div>
+                    <div class = "hidden content">
+                        <i class = "checkmark icon"></i>
+                    </div>
                 </div>
-                <div class = "ui red basic cancel button" id = "number_cancel">
-                    <i class = "remove icon"></i>
-                    否
+                <div class = "ui red basic cancel animated vertical button" id = "number_cancel">
+                    <div class = "visible content"> 否 </div>
+                    <div class = "hidden content">
+                        <i class = "remove icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -286,19 +331,25 @@
             </table>
             <div class = "ui input">
                 <input type = "text" id = "add_use_input" placeholder = "Add item..." style = "width:500px">
-                <button class = "ui blue basic right labeled icon button" id = "add_use">
-                    <i class = "add icon"></i>
-                    Add
-                </button>
+                <div class = "ui blue basic animated button" id = "add_use">
+                    <div class = "visible content"> 加入 </div>
+                    <div class = "hidden content">
+                        <i class = "add icon"></i>
+                    </div>
+                </div>
             </div>
             <div class = "actions">
-                <div class = "ui green ok button" id = "use_save">
-                    <i class = "checkmark icon"></i>
-                        存檔
+                <div class = "ui green ok animated vertical button" id = "use_save">
+                    <div class = "visible content"> 存檔 </div>
+                    <div class = "hidden content">
+                        <i class = "save icon"></i>
+                    </div>
                 </div>
-                <div class = "ui red basic cancel button" id = "use_close">
-                    <i class = "remove icon"></i>
-                        關閉
+                <div class = "ui red basic cancel animated vertical button" id = "use_close">
+                    <div class = "visible content"> 關閉 </div>
+                    <div class = "hidden content">
+                        <i class = "remove icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -313,13 +364,17 @@
                 <p> 確定存檔? </p>
             </div>
             <div class = "actions">
-                <div class = "ui green ok button" id = "use_ok">
-                    <i class = "checkmark icon"></i>
-                    是
+                <div class = "ui green ok animated vertical button" id = "use_ok">
+                    <div class = "visible content"> 是 </div>
+                    <div class = "hidden content">
+                        <i class = "checkmark icon"></i>
+                    </div>
                 </div>
-                <div class = "ui red basic cancel button" id = "use_cancel">
-                    <i class = "remove icon"></i>
-                    否
+                <div class = "ui red basic cancel animated vertical button" id = "use_cancel">
+                    <div class = "visible content"> 否 </div>
+                    <div class = "hidden content">
+                        <i class = "remove icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -348,19 +403,25 @@
             </table>
             <div class = "ui input">
                 <input type = "text" id = "add_buy_input" placeholder = "Add item..." style = "width:500px">
-                <button class = "ui blue basic right labeled icon button" id = "add_buy">
-                    <i class = "add icon"></i>
-                    Add 
-                </button>
+                <div class = "ui blue basic animated button" id = "add_buy">
+                    <div class = "visible content"> 加入 </div>
+                    <div class = "hidden content">
+                        <i class = "add icon"></i>
+                    </div>
+                </div>
             </div>
             <div class = "actions">
-                <div class = "ui green ok button" id = "buy_save">
-                    <i class = "checkmark icon"></i>
-                        存檔
+                <div class = "ui green ok animated vertical button" id = "buy_save">
+                    <div class = "visible content"> 存檔 </div>
+                    <div class = "hidden content">
+                        <i class = "save icon"></i>
+                    </div>
                 </div>
-                <div class = "ui red basic cancel button" id = "buy_close">
-                    <i class = "remove icon"></i>
-                        關閉
+                <div class = "ui red basic cancel animated vertical button" id = "buy_close">
+                    <div class = "visible content"> 關閉 </div>
+                    <div class = "hidden content">
+                        <i class = "remove icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -375,13 +436,17 @@
                 <p> 確定存檔? </p>
             </div>
             <div class = "actions">
-                <div class = "ui green ok button" id = "buy_ok">
-                    <i class = "checkmark icon"></i>
-                    是
+                <div class = "ui green ok animated vertical button" id = "buy_ok">
+                    <div class = "visible content"> 是 </div>
+                    <div class = "hidden content">
+                        <i class = "checkmark icon"></i>
+                    </div>
                 </div>
-                <div class = "ui red basic cancel button" id = "buy_cancel">
-                    <i class = "remove icon"></i>
-                    否
+                <div class = "ui red basic cancel animated vertical button" id = "buy_cancel">
+                    <div class = "visible content"> 否 </div>
+                    <div class = "hidden content">
+                        <i class = "remove icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -399,13 +464,17 @@
                 <p> 確定存檔? </p>
             </div>
             <div class = "actions">
-                <div class = "ui green ok button" id = "report_ok">
-                    <i class = "checkmark icon"></i>
-                    是
+                <div class = "ui green ok animated vertical button" id = "report_ok">
+                    <div class = "visible content"> 是 </div>
+                    <div class = "hidden content">
+                        <i class = "checkmark icon"></i>
+                    </div>
                 </div>
-                <div class = "ui red basic cancel button" id = "cancel">
-                    <i class = "remove icon"></i>
-                    否
+                <div class = "ui red basic cancel animated vertical button" id = "cancel">
+                    <div class = "visible content"> 否 </div>
+                    <div class = "hidden content">
+                        <i class = "remove icon"></i>
+                    </div>
                 </div>
             </div>
         </div>

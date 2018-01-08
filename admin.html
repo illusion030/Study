@@ -38,8 +38,18 @@
                 <tbody>
                 </tbody>
             </table>
-            <button id = "edit_save" class = "medium ui blue basic button"> 存檔 </button>
-            <button id = "edit_refresh" class = "medium ui blue basic button"> 復原 </button>
+            <div id = "edit_save" class = "medium ui blue basic animated vertical button">
+                <div class = "visible content"> 存檔 </div>
+                <div class = "hidden content">
+                    <i class = "save icon"></i>
+                </div>
+            </div>
+            <div id = "edit_refresh" class = "medium ui blue basic animated vertical button">
+                <div class = "visible content"> 復原 </div>
+                <div class = "hidden content">
+                    <i class = "undo icon"></i>
+                </div>
+            </div>
         </div>
 
         <div class = "ui inverted vertical footer center aligned segment">
@@ -72,13 +82,17 @@
                 <p>請確認資料正確，存檔後無法復原。</p>
             </div>
             <div class = "actions">
-                <div class = "ui green basic ok button">
-                    <i class = "checkmark icon"></i>
-                    是
+                <div class = "ui green basic animated vertical ok button">
+                    <div class = "visible content"> 是 </div>
+                    <div class = "hidden content">
+                        <i class = "checkmark icon"></i>
+                    </div>
                 </div>
-                <div class = "ui red cancel button">
-                    <i class = "remove icon"></i>
-                    否
+                <div class = "ui red cancel animated vertical button">
+                    <div class = "visible content"> 否 </div>
+                    <div class = "hidden content">
+                        <i class = "remove icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
