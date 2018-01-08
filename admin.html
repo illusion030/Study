@@ -14,80 +14,31 @@
             <a href = "./report.html" class = "large item"> 輸入 </a>
             <a href = "./edit.html" class = "large item"> 編輯 </a>
             <a href = "./show.html" class = "large item"> 顯示 </a>
-            <div class = "ui selection dropdown item" id = "year_drop">
-                <input type = "hidden" id = "year">
-                <i class = "dropdown icon"></i>
-                <div class = "default text">年度</div>
-                <div class = "menu" id = "year_menu">
-                </div>
+            <div class = "right menu">
+                <a href = "./" class = "large item" id = "toindex"> 首頁 </a>
             </div>
-            <div class = "ui selection dropdown item" id = "number_drop">
-                <input type = "hidden" id = "number">
-                <i class = "dropdown icon"></i>
-                <div class = "default text">會編</div>
-                <div class = "menu" id = "number_menu">
-                </div>
-            </div>
-            <a href = "./" class = "right aligned large item"> 首頁 </a>
         </div>
 
-        <div class = "ui inverted active dimmer" id = "load_edit">
+        <div class = "ui inverted active dimmer" id = "load_admin">
             <div class = "ui indeterminate text loader"> 資料處理中 </div>
         </div>
         
-        <div id = "container">
-            <div class = "ui grid">
-                <div class = "four wide column" id = "show_select">
-                    <div class = "ui segment" id = "not_filled_seg">
-                        <div class = "ui top left attached large label">
-                            未填妥項目
-                        </div>
-                        <div class = "ui slider checkbox" id = "not_filled_cb">
-                            <input type = "checkbox">
-                            <label>只顯示未填妥項目</label>
-                        </div>
-                    </div>
-                    <div class = "ui segment" id = "date_seg">
-                        <div class = "ui top left attached large label">
-                            設定日期範圍
-                        </div>
-                        <form id = "date_form" class = "ui form">
-                            <label class = "ui large label"> 開始日期: </label>
-                            <input type = "text" id = "start_date" placeholder = "start date" readonly>
-                            <br>
-                            <br>
-                            <label class = "ui large label"> 結束日期: </label>
-                            <input type = "text" id = "end_date" placeholder = "end date" readonly>
-                            <br>
-                            <br>
-                            <button type = "button" class = "ui button" id = "clr_btn"> 清空 </button>
-                        </form>
-                    </div>
-                    <div class = 'ui segment' id = 'use_seg'></div>
-                </div>
-                <div class = "twelve wide column">
-                    <table id = "report_table" border="1" class = "ui celled table" >
-                        <thead>
-                            <tr>
-                                <th> 建檔日期 </th>
-                                <th> 請購編號 </th>
-                                <th> 實施主軸 </th>
-                                <th> 請購類別 </th>
-                                <th> 請購項目 </th>
-                                <th> 請購金額 </th>
-                                <th> 傳票號碼 </th>
-                                <th> 刪除 </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+        <div id = "container" class = "ui padded left aligned container">
+            <table id = "account_table" border="1" class = "ui celled table" >
+                <thead>
+                    <tr>
+                        <th> 編號 </th>
+                        <th> 帳號 </th>
+                        <th> 密碼 </th>
+                        <th> 是否為管理員 </th>
+                        <th> 刪除 </th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
             <button id = "edit_save" class = "medium ui blue basic button"> 存檔 </button>
             <button id = "edit_refresh" class = "medium ui blue basic button"> 復原 </button>
-                </div>
-            </div>
-            <br>
-            <br>
         </div>
 
         <div class = "ui inverted vertical footer center aligned segment">
@@ -154,6 +105,6 @@
                 沒有資料需要更新
             </div>
         </div>
-        <script src = "./assets/edit.js"></script>
+        <script src = "./assets/admin.js"></script>
     </body>
 </HTML>

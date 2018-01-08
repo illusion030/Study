@@ -61,7 +61,7 @@ function check_account() {
                 c = user_count
                 database.ref('/users/'+ c +'/admin').once('value').then (
                     function(snapshot) {
-                          if (snapshot.val()) {
+                        if (snapshot.val()) {
                             $('#toindex').before("<a href = './admin.html' class = 'large item'> 管理 </a>")
                         }
                     }

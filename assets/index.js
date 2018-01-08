@@ -171,7 +171,8 @@ $('#reg_ok').click(function(e) {
                     var updates = {}
                     var data = {
                         'account':$('#reg_acc').val(),
-                        'pwd':$('#reg_pwd').val()
+                        'pwd':$('#reg_pwd').val(),
+                        'admin':0
                     }
                     updates['/users/' + count] = data
                     database.ref().update(updates).then(function() {
