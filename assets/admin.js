@@ -21,7 +21,6 @@ $(document).ready(function() {
         window.location = './index.html'
     } else {
         check_account()
-        update_account()
     }
 })
 
@@ -53,6 +52,10 @@ function check_account() {
                     function(snapshot) {
                         if (snapshot.val()) {
                             $('#toindex').before("<a href = './admin.html' class = 'large item'> 管理 </a>")
+                            update_account()
+                        } else {
+                            alert('沒有權限')
+                            window.location = './index.html'
                         }
                     }
                 )
