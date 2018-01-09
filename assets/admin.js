@@ -78,10 +78,44 @@ function update_account() {
             var c = user_count
             database.ref('users/' + c ).once('value').then (
                 function(snap) {
-                    if (snap.val()['admin'] == 1)
-                        $('#account_table > tbody:last-child').append('<tr id = "user'+ c +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ c +'</td><td contenteditable="true" oninput = "edit_change()">'+ escapeHTML(snap.val()['account']) +'</td><td contenteditable="true" oninput = "edit_change()">'+ escapeHTML(snap.val()['pwd']) +'</td><td contenteditable="true" oninput = "edit_change()">是</td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ c +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
-                    else
-                        $('#account_table > tbody:last-child').append('<tr id = "user'+ c +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ c +'</td><td contenteditable="true" oninput = "edit_change()">'+ escapeHTML(snap.val()['account']) +'</td><td contenteditable="true" oninput = "edit_change()">'+ escapeHTML(snap.val()['pwd']) +'</td><td contenteditable="true" oninput = "edit_change()">否</td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ c +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
+                    if (snap.val()['admin'] == 1) {
+                        $('#account_table > tbody:last-child').append('<tr id = "user'+ c +'"><td>'+ c +'</td><td contenteditable="true" oninput = "edit_change()">'+ escapeHTML(snap.val()['account']) +'</td><td contenteditable="true" oninput = "edit_change()">'+ escapeHTML(snap.val()['pwd']) +'</td><td><div class = "ui selection dropdown" id = "drop' + snap.val()['account'] + '"><input type = "hidden" id = "admin"><i class = "dropdown icon"></i><div class = "default text">是</div></div></td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ c +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
+                        $('#drop' + snap.val()['account']).dropdown({
+                            onChange: function() {
+                                is_changed = true
+                            },
+                            values: [
+                                {
+                                    name: '是',
+                                    value: '是',
+                                    selected: true
+                                },
+                                {
+                                    name: '否',
+                                    value: '否'
+                                }
+                            ]
+                        })
+                    }
+                    else {
+                        $('#account_table > tbody:last-child').append('<tr id = "user'+ c +'"><td>'+ c +'</td><td contenteditable="true" oninput = "edit_change()">'+ escapeHTML(snap.val()['account']) +'</td><td contenteditable="true" oninput = "edit_change()">'+ escapeHTML(snap.val()['pwd']) +'</td><td><div class = "ui selection dropdown" id = "drop' + snap.val()['account'] + '"><input type = "hidden" id = "admin"><i class = "dropdown icon"></i><div class = "default text">否</div></div></td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ c +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
+                        $('#drop' + snap.val()['account']).dropdown({
+                            onChange: function() {
+                                is_changed = true
+                            },
+                            values: [
+                                {
+                                    name: '是',
+                                    value: '是',
+                                },
+                                {
+                                    name: '否',
+                                    value: '否',
+                                    selected: true
+                                }
+                            ]
+                        })
+                    }
                 }
             )
             remove_num[c] = 0
@@ -133,44 +167,25 @@ $('.ui.ok.button').click(function(e) {
     
     $('#account_table > tbody > tr').each(function(i, item) {
         
-        account = {'account':item.cells[1].innerHTML}
-        pwd = {'pwd':item.cells[2].innerHTML}
-        
-        if (item.cells[3].innerHTML == '是') {
-            admin = {'admin':1}
-            database.ref('/users/' + item.cells[0].innerHTML + '').update(account).then(function() {
-            }).catch(function(err) {
-                console.log('Edit failed.' + err)
-                $('#failed').modal('show')
-            })
-            database.ref('/users/' + item.cells[0].innerHTML + '').update(pwd).then(function() {
-            }).catch(function(err) {
-                console.log('Edit failed.' + err)
-                $('#failed').modal('show')
-            })
-            database.ref('/users/' + item.cells[0].innerHTML + '').update(admin).then(function() {
-            }).catch(function(err) {
-                console.log('Edit failed.' + err)
-                $('#failed').modal('show')
-            })
+        if ($('#drop'+item.cells[1].innerHTML).dropdown('get value') == '是') {
+            data = {
+                'account':item.cells[1].innerHTML,
+                'pwd':item.cells[2].innerHTML,
+                'admin':1
+            }
         } else {
-            admin = {'admin':0}
-            database.ref('/users/' + item.cells[0].innerHTML + '').update(account).then(function() {
-            }).catch(function(err) {
-                console.log('Edit failed.' + err)
-                $('#failed').modal('show')
-            })
-            database.ref('/users/' + item.cells[0].innerHTML + '').update(pwd).then(function() {
-            }).catch(function(err) {
-                console.log('Edit failed.' + err)
-                $('#failed').modal('show')
-            })
-            database.ref('/users/' + item.cells[0].innerHTML + '').update(admin).then(function() {
-            }).catch(function(err) {
-                console.log('Edit failed.' + err)
-                $('#failed').modal('show')
-            })
+            data = {
+                'account':item.cells[1].innerHTML,
+                'pwd':item.cells[2].innerHTML,
+                'admin':0
+            }
         }
+
+        database.ref('/users/' + item.cells[0].innerHTML + '').update(data).then(function() {
+        }).catch(function(err) {
+            console.log('Edit failed.' + err)
+            $('#failed').modal('show')
+        })
     })
 
     is_changed = false

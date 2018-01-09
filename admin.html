@@ -8,6 +8,16 @@
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js"></script>
         <script src = "https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
+        <style type = "text/css">
+            #Site {
+                display: flex;
+                min-height: 100vh;
+                flex-direction: column;
+            }
+            #container {
+                flex: 1;
+            }
+        </style>
     </head>
     <body id = "Site">
 
@@ -24,8 +34,8 @@
             <div class = "ui indeterminate text loader"> 資料處理中 </div>
         </div>
         
-        <div id = "container" class = "ui padded left aligned container">
-            <table id = "account_table" border="1" class = "ui celled table" >
+        <div id = "container" class = "ui text container">
+            <table id = "account_table" border="1" class = "ui celled striped table" >
                 <thead>
                     <tr>
                         <th> 編號 </th>
@@ -38,36 +48,25 @@
                 <tbody>
                 </tbody>
             </table>
-            <div id = "edit_save" class = "medium ui blue basic animated vertical button">
-                <div class = "visible content"> 存檔 </div>
-                <div class = "hidden content">
-                    <i class = "save icon"></i>
+            <div class = "ui fluid large buttons">
+                <div id = "edit_save" class = "medium ui blue basic animated vertical button">
+                    <div class = "visible content"> 存檔 </div>
+                    <div class = "hidden content">
+                        <i class = "save icon"></i>
+                    </div>
                 </div>
-            </div>
-            <div id = "edit_refresh" class = "medium ui blue basic animated vertical button">
-                <div class = "visible content"> 復原 </div>
-                <div class = "hidden content">
-                    <i class = "undo icon"></i>
+                <div id = "edit_refresh" class = "medium ui green basic animated vertical button">
+                    <div class = "visible content"> 復原 </div>
+                    <div class = "hidden content">
+                        <i class = "undo icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class = "ui inverted vertical footer center aligned segment">
-            <p>&copy; 國立成功大學 教學發展中心 All rights reserved. </p>
+            <p>&copy; 國立成功大學 教學發展中心 All rights reserved. | Semantic UI</p>
         </div>
-
-        <style type = "text/css">
-
-            #Site {
-                display: flex;
-                min-height: 100vh;
-                flex-direction: column;
-            }
-            #container {
-                flex: 1;
-            }
-
-        </style>
 
         <!-- modal
         ============================-->
@@ -82,13 +81,13 @@
                 <p>請確認資料正確，存檔後無法復原。</p>
             </div>
             <div class = "actions">
-                <div class = "ui green basic animated vertical ok button">
+                <div class = "ui large green basic animated vertical ok button">
                     <div class = "visible content"> 是 </div>
                     <div class = "hidden content">
                         <i class = "checkmark icon"></i>
                     </div>
                 </div>
-                <div class = "ui red cancel animated vertical button">
+                <div class = "ui large red cancel animated vertical button">
                     <div class = "visible content"> 否 </div>
                     <div class = "hidden content">
                         <i class = "remove icon"></i>

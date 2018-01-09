@@ -8,6 +8,16 @@
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js"></script>
         <script src = "https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
+        <style type = "text/css">
+            #Site {
+                display: flex;
+                min-height: 100vh;
+                flex-direction: column;
+            }
+            #contain {
+                flex: 1;
+            }
+        </style>
     </head>
     <body id = "Site">
         
@@ -24,141 +34,130 @@
             <div class = "ui indeterminate text loader"> 資料處理中 </div>
         </div>
         
-        <div id = "contain" class = "ui container">
+        <div id = "contain" class = "ui text container">
             <form id = "report_form" class = "ui form">
-                <label class = "ui large label"> 建檔日期: </label>
-                <input type = "text" id = "report_date" readonly>
-                <br>
-                <br>
-                <label class = "ui large label"> 請購編號: </label>
-                <input type = "text" id = "buy_num" placeholder = "Type here ...">
-                <br>
-                <br>
-                <label class = "ui large label"> 年度: </label>
-                <br>
-                <div class = "ui divided grid">
-                    <div class = "fourteen wide column">
-                        <div class = "ui fluid selection dropdown" id = "year_title">
-                            <input type = "hidden" id = "year">
-                            <i class = "dropdown icon"></i>
-                            <div class = "default text"> Select </div>
-                            <div class = "menu" id = "year_menu">
+                <div class = "field">
+                    <label class = "ui large label"> 建檔日期: </label>
+                    <input type = "text" id = "report_date" readonly>
+                </div>
+                <div class = "field">
+                    <label class = "ui large label"> 請購編號: </label>
+                    <input type = "text" id = "buy_num" placeholder = "Type here ...">
+                </div>
+                <div class = "field">
+                    <label class = "ui large label"> 年度: </label>
+                    <div class = "ui grid">
+                        <div class = "thirteen wide column">
+                            <div class = "ui fluid selection dropdown" id = "year_title">
+                                <input type = "hidden" id = "year">
+                                <i class = "dropdown icon"></i>
+                                <div class = "default text"> Select </div>
+                                <div class = "menu" id = "year_menu">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class = "two wide column">
-                        <div class = "ui medium blue basic animated button" id = "edit_year"> 
-                            <div class = "visible content">修改</div>
-                            <div class = "hidden content">
-                                <i class = "large edit icon"></i>
+                        <div class = "three wide right aligned column">
+                            <div class = "ui medium blue basic animated button" id = "edit_year"> 
+                                <div class = "visible content">修改</div>
+                                <div class = "hidden content">
+                                    <i class = "large edit icon"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <br>
-                <label class = "ui large label"> 會編: </label>
-                <br>
-                <div class = "ui divided grid">
-                    <div class = "fourteen wide column">
-                        <div class = "ui fluid selection dropdown" id = "number_title">
-                            <input type = "hidden" id = "number">
-                            <i class = "dropdown icon"></i>
-                            <div class = "default text"> Select </div>
-                            <div class = "menu" id = "number_menu">
+                <div class = "field">
+                    <label class = "ui large label"> 會編: </label>
+                    <div class = "ui grid">
+                        <div class = "thirteen wide column">
+                            <div class = "ui fluid selection dropdown" id = "number_title">
+                                <input type = "hidden" id = "number">
+                                <i class = "dropdown icon"></i>
+                                <div class = "default text"> Select </div>
+                                <div class = "menu" id = "number_menu">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class = "two wide column">
-                        <div class = "ui medium blue basic animated button" id = "edit_number"> 
-                            <div class = "visible content">修改</div>
-                            <div class = "hidden content">
-                                <i class = "large edit icon"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <label class = "ui large label"> 實施主軸: </label>
-                <br>
-                <div class = "ui divided grid">
-                    <div class = "fourteen wide column">
-                        <div class = "ui fluid selection dropdown" id = "use_title">
-                            <input type = "hidden" id = "use">
-                            <i class = "dropdown icon"></i>
-                            <div class = "default text"> Select </div>
-                            <div class = "menu" id = "use_menu">
-                            </div>
-                        </div>
-                    </div>
-                    <div class = "two wide column">
-                        <div class = "ui medium blue basic animated button" id = "edit_use"> 
-                            <div class = "visible content">修改</div>
-                            <div class = "hidden content">
-                                <i class = "large edit icon"></i>
+                        <div class = "three wide right aligned column">
+                            <div class = "ui medium blue basic animated button" id = "edit_number"> 
+                                <div class = "visible content">修改</div>
+                                <div class = "hidden content">
+                                    <i class = "large edit icon"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <br>
-                <label class = "ui large label"> 請購類別: </label>
-                <br>
-                <div class = "ui divided grid">
-                    <div class = "fourteen wide column">
-                        <div class = "ui fluid selection dropdown" id = "buy_type">
-                            <input type = "hidden" id = "buy">
-                            <i class = "dropdown icon"></i>
-                            <div class = "default text"> Select </div>
-                            <div class = "menu" id = "buy_menu">
+                <div class = "field">
+                    <label class = "ui large label"> 實施主軸: </label>
+                    <div class = "ui grid">
+                        <div class = "thirteen wide column">
+                            <div class = "ui fluid selection dropdown" id = "use_title">
+                                <input type = "hidden" id = "use">
+                                <i class = "dropdown icon"></i>
+                                <div class = "default text"> Select </div>
+                                <div class = "menu" id = "use_menu">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class = "two wide column">
-                        <div class = "ui medium blue basic animated button" id = "edit_buy"> 
-                            <div class = "visible content">修改</div>
-                            <div class = "hidden content">
-                                <i class = "large edit icon"></i>
+                        <div class = "three wide right aligned column">
+                            <div class = "ui medium blue basic animated button" id = "edit_use"> 
+                                <div class = "visible content">修改</div>
+                                <div class = "hidden content">
+                                    <i class = "large edit icon"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <br>
-                <label class = "ui large label"> 請購項目: </label>
-                <input type = "text" id = "buy_name" placeholder = "Type here ...">
-                <br>
-                <br>
-                <label class = "ui large label"> 請購金額: </label>
-                <input type = "text" id = "buy_money">
-                <br>
-                <br>
-                <label class = "ui large label"> 傳票號碼: </label>
-                <input type = "text" id = "ticket_num" placeholder = "Type here ...">
-                <br>
-                <br>
-                <div class = "ui medium blue basic animated vertical button" id = "report_save"> 
-                    <div class = "visible content">存檔</div>
-                    <div class = "hidden content">
-                        <i class = "save icon"></i>
+                <div class = "field">
+                    <label class = "ui large label"> 請購類別: </label>
+                    <div class = "ui grid">
+                        <div class = "thirteen wide column">
+                            <div class = "ui fluid selection dropdown" id = "buy_type">
+                                <input type = "hidden" id = "buy">
+                                <i class = "dropdown icon"></i>
+                                <div class = "default text"> Select </div>
+                                <div class = "menu" id = "buy_menu">
+                                </div>
+                            </div>
+                        </div>
+                        <div class = "three wide right aligned column">
+                            <div class = "ui medium blue basic animated button" id = "edit_buy"> 
+                                <div class = "visible content">修改</div>
+                                <div class = "hidden content">
+                                    <i class = "large edit icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class = "field">
+                    <label class = "ui large label"> 請購項目: </label>
+                    <input type = "text" id = "buy_name" placeholder = "Type here ...">
+                </div>
+                <div class = "field">
+                    <label class = "ui large label"> 請購金額: </label>
+                    <input type = "text" id = "buy_money">
+                </div>
+                <div class = "field">
+                    <label class = "ui large label"> 傳票號碼: </label>
+                    <input type = "text" id = "ticket_num" placeholder = "Type here ...">
+                </div>
+                <div class = "field">
+                    <div class = "ui fluid large blue basic animated vertical button" id = "report_save"> 
+                        <div class = "visible content">存檔</div>
+                        <div class = "hidden content">
+                            <i class = "save icon"></i>
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
         
         <div class = "ui inverted vertical footer center aligned segment">
-            <p>&copy; 國立成功大學 教學發展中心 All rights reserved. </p>
+            <p>&copy; 國立成功大學 教學發展中心 All rights reserved. | Semantic UI </p>
         </div>
-
-        <style type = "text/css">
-            
-            #Site {
-                display: flex;
-                min-height: 100vh;
-                flex-direction: column;
-            }
-            #contain {
-                flex: 1;
-            }
-
-        </style>
 
         <!-- modal
         ========================================-->
@@ -220,13 +219,13 @@
                 <p> 確定存檔? </p>
             </div>
             <div class = "actions">
-                <div class = "ui green basic ok animated vertical button" id = "year_ok">
+                <div class = "ui large green basic ok animated vertical button" id = "year_ok">
                     <div class = "visible content"> 是 </div>
                     <div class = "hidden content">
                         <i class = "checkmark icon"></i>
                     </div>
                 </div>
-                <div class = "ui red basic cancel animated vertical button" id = "year_cancel">
+                <div class = "ui large red basic cancel animated vertical button" id = "year_cancel">
                     <div class = "visible content"> 否 </div>
                     <div class = "hidden content">
                         <i class = "remove icon"></i>
@@ -292,13 +291,13 @@
                 <p> 確定存檔? </p>
             </div>
             <div class = "actions">
-                <div class = "ui green basic ok animated vertical button" id = "number_ok">
+                <div class = "ui large green basic ok animated vertical button" id = "number_ok">
                     <div class = "visible content"> 是 </div>
                     <div class = "hidden content">
                         <i class = "checkmark icon"></i>
                     </div>
                 </div>
-                <div class = "ui red basic cancel animated vertical button" id = "number_cancel">
+                <div class = "ui large red basic cancel animated vertical button" id = "number_cancel">
                     <div class = "visible content"> 否 </div>
                     <div class = "hidden content">
                         <i class = "remove icon"></i>
@@ -364,13 +363,13 @@
                 <p> 確定存檔? </p>
             </div>
             <div class = "actions">
-                <div class = "ui green basic ok animated vertical button" id = "use_ok">
+                <div class = "ui large green basic ok animated vertical button" id = "use_ok">
                     <div class = "visible content"> 是 </div>
                     <div class = "hidden content">
                         <i class = "checkmark icon"></i>
                     </div>
                 </div>
-                <div class = "ui red basic cancel animated vertical button" id = "use_cancel">
+                <div class = "ui large red basic cancel animated vertical button" id = "use_cancel">
                     <div class = "visible content"> 否 </div>
                     <div class = "hidden content">
                         <i class = "remove icon"></i>
@@ -436,13 +435,13 @@
                 <p> 確定存檔? </p>
             </div>
             <div class = "actions">
-                <div class = "ui green basic ok animated vertical button" id = "buy_ok">
+                <div class = "ui large green basic ok animated vertical button" id = "buy_ok">
                     <div class = "visible content"> 是 </div>
                     <div class = "hidden content">
                         <i class = "checkmark icon"></i>
                     </div>
                 </div>
-                <div class = "ui red basic cancel animated vertical button" id = "buy_cancel">
+                <div class = "ui large red basic cancel animated vertical button" id = "buy_cancel">
                     <div class = "visible content"> 否 </div>
                     <div class = "hidden content">
                         <i class = "remove icon"></i>
@@ -464,13 +463,13 @@
                 <p> 確定存檔? </p>
             </div>
             <div class = "actions">
-                <div class = "ui green basic ok animated vertical button" id = "report_ok">
+                <div class = "ui large green basic ok animated vertical button" id = "report_ok">
                     <div class = "visible content"> 是 </div>
                     <div class = "hidden content">
                         <i class = "checkmark icon"></i>
                     </div>
                 </div>
-                <div class = "ui red basic cancel animated vertical button" id = "cancel">
+                <div class = "ui large red basic cancel animated vertical button" id = "cancel">
                     <div class = "visible content"> 否 </div>
                     <div class = "hidden content">
                         <i class = "remove icon"></i>

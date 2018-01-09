@@ -8,6 +8,16 @@
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
         <script src = "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js"></script>
         <script src = "https://www.gstatic.com/firebasejs/4.7.0/firebase.js"></script>
+        <style type = "text/css">
+            #Site {
+                display: flex;
+                min-height: 100vh;
+                flex-direction: column;
+            }
+            #container {
+                flex: 1;
+            }
+        </style>
     </head>
     <body id = "Site">
 
@@ -74,32 +84,34 @@
                     <div class = 'ui segment' id = 'use_seg'></div>
                 </div>
                 <div class = "twelve wide column">
-                    <table id = "report_table" border="1" class = "ui celled table" >
+                    <table id = "report_table" border="1" class = "ui celled striped table" >
                         <thead>
-                            <tr>
-                                <th> 建檔日期 </th>
-                                <th> 請購編號 </th>
+                            <tr class = "center aligned">
+                                <th class = "single line"> 建檔日期 </th>
+                                <th class = "single line"> 請購編號 </th>
                                 <th> 實施主軸 </th>
-                                <th> 請購類別 </th>
+                                <th class = "single line"> 請購類別 </th>
                                 <th> 請購項目 </th>
-                                <th> 請購金額 </th>
-                                <th> 傳票號碼 </th>
-                                <th> 刪除 </th>
+                                <th class = "single line"> 請購金額 </th>
+                                <th class = "single line"> 傳票號碼 </th>
+                                <th class = "single line"> 刪除 </th>
                             </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
-                    <div class = "ui medium blue basic animated vertical button" id = "edit_save">
-                        <div class = "visible content">存檔</div>
-                        <div class = "hidden content">
-                            <i class = "save icon"></i>
+                    <div class = "ui fluid large buttons">
+                        <div class = "ui blue basic animated vertical button" id = "edit_save">
+                            <div class = "visible content">存檔</div>
+                            <div class = "hidden content">
+                                <i class = "save icon"></i>
+                            </div>
                         </div>
-                    </div>
-                    <div class = "ui medium blue basic animated vertical button" id = "edit_refresh">
-                        <div class = "visible content">復原</div>
-                        <div class = "hidden content">
-                            <i class = "undo icon"></i>
+                        <div class = "ui green basic animated vertical button" id = "edit_refresh">
+                            <div class = "visible content">復原</div>
+                            <div class = "hidden content">
+                                <i class = "undo icon"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -109,22 +121,9 @@
         </div>
 
         <div class = "ui inverted vertical footer center aligned segment">
-            <p>&copy; 國立成功大學 教學發展中心 All rights reserved. </p>
+            <p>&copy; 國立成功大學 教學發展中心 All rights reserved. | Semantic UI</p>
         </div>
-
-        <style type = "text/css">
-
-            #Site {
-                display: flex;
-                min-height: 100vh;
-                flex-direction: column;
-            }
-            #container {
-                flex: 1;
-            }
-
-        </style>
-
+        
         <!-- modal
         ============================-->
 
@@ -138,13 +137,13 @@
                 <p>請確認資料正確，存檔後無法復原。</p>
             </div>
             <div class = "actions">
-                <div class = "ui green basic animated vertical ok button">
+                <div class = "ui large green basic animated vertical ok button">
                     <div class = "visible content"> 是 </div>
                     <div class = "hidden content">
                         <i class = "checkmark icon"></i>
                     </div>
                 </div>
-                <div class = "ui red basic animated vertical cancel button">
+                <div class = "ui large red basic animated vertical cancel button">
                     <div class = "visible content"> 否 </div>
                     <div class = "hidden content">
                         <i class = "remove icon"></i>
