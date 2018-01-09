@@ -66,7 +66,7 @@ function check_account() {
     })
 }
 
-/*********** update function *****************/
+/*********** Update Function *****************/
 
 function update_account() {
     $('#account_table > tbody').empty()
@@ -79,9 +79,9 @@ function update_account() {
             database.ref('users/' + c ).once('value').then (
                 function(snap) {
                     if (snap.val()['admin'] == 1)
-                        $('#account_table > tbody:last-child').append('<tr id = "user'+ c +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ c +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['account'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['pwd'] +'</td><td contenteditable="true" oninput = "edit_change()">是</td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ c +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
+                        $('#account_table > tbody:last-child').append('<tr id = "user'+ c +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ c +'</td><td contenteditable="true" oninput = "edit_change()">'+ escapeHTML(snap.val()['account']) +'</td><td contenteditable="true" oninput = "edit_change()">'+ escapeHTML(snap.val()['pwd']) +'</td><td contenteditable="true" oninput = "edit_change()">是</td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ c +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
                     else
-                        $('#account_table > tbody:last-child').append('<tr id = "user'+ c +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ c +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['account'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['pwd'] +'</td><td contenteditable="true" oninput = "edit_change()">否</td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ c +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
+                        $('#account_table > tbody:last-child').append('<tr id = "user'+ c +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ c +'</td><td contenteditable="true" oninput = "edit_change()">'+ escapeHTML(snap.val()['account']) +'</td><td contenteditable="true" oninput = "edit_change()">'+ escapeHTML(snap.val()['pwd']) +'</td><td contenteditable="true" oninput = "edit_change()">否</td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ c +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
                 }
             )
             remove_num[c] = 0
@@ -92,7 +92,7 @@ function update_account() {
     })
 }
 
-/******** edit ********************/
+/******** Edit ********************/
 
 $('#edit_save').click(function(e) {
     
@@ -187,4 +187,18 @@ function remove_edit(e) {
     $('#user' + e + '').remove()
     remove_num[e] = 1
     is_changed = true
+}
+
+/******** Prevent attack ********************/
+
+function escapeHTML(data) {
+    var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+
+    return data.replace(/[&<>"']/g, function(m) { return map[m]; })
 }

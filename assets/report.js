@@ -515,5 +515,4 @@ function button_up(e) {
 $('#cancel').click(function(e){
     e.preventDefault()
 })
-
 /***************************************************/

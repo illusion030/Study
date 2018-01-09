@@ -19,6 +19,8 @@ $(document).ready(function() {
     check_account()
 })
 
+/************** Cookie **************/
+
 function setCookie(cname, cvalue) {
     document.cookie = cname + "=" + cvalue + ";"
 }
@@ -42,7 +44,7 @@ function getCookie(cname) {
 function checkCookie() {
     user = getCookie('account')
     if (user != "") {
-        $('#container').html("<div class = 'ui padded center aligned container'><p>現在帳號為: "+ user +"</p><button class = 'ui button' id = 'logout_btn'>登出</button></div>")
+        $('#contain_column').html("<div class = 'ui stacked segment'><div class = 'ui message'>現在帳號為: "+ escapeHTML(user) +"</div><div class = 'ui fluid blue basic animated button' id = 'logout_btn'><div class = 'visible content'>登出</div><div class = 'hidden content'><i class = 'sign out icon'></i></div></div>")
         $('#logout_btn').click(function() {
             setCookie('account', '')
             checkCookie()
@@ -50,7 +52,7 @@ function checkCookie() {
             $('#logout_success').modal('show')
         })
     } else {
-        $('#container').html("<div class = 'ui padded left aligned text container'><form id = 'login_form' class = 'ui form'><label class = 'ui large label'>帳號</label><input type = 'text' id = 'account'></input><br><br><label class = 'ui large label'>密碼</label><input type = 'password' id = 'pwd'></input><br><br></form><button class = 'ui right floated button' id = 'reg_btn'>註冊</button><button class = 'ui right floated button' id = 'login_btn'>登入</button></div>")
+        $('#contain_column').html("<form id = 'login_form' class = 'ui large form'><div class = 'ui stacked segment'><div class = 'field'><div class = 'ui left icon input'><i class = 'user icon'></i><input type = 'text' id = 'account' placeholder = 'Account'></div></div><div class = 'field'><div class = 'ui left icon input'><i class = 'lock icon'></i><input type = 'password' id = 'pwd' placeholder = 'Password'></div></div><div class = 'ui fluid large buttons'><div class = 'ui red basic animated button' id = 'login_btn'><div class = 'visible content'>登入</div><div class = 'hidden content'><i class = 'sign in icon'></i></div></div><div class = 'ui green animated basic button' id = 'reg_btn'><div class = 'visible content'>註冊</div><div class = 'hidden content'><i class = 'add user icon'></i></div></div></div></div></form>")
         $('#login_btn').click(function() {
             is_login = false
             $('#load_index').show()
@@ -112,6 +114,8 @@ function check_account() {
     })
 }
 
+/************** Change Page **************/
+
 $('#go_to_input').click(function() {
     
     user = getCookie('account')
@@ -144,10 +148,10 @@ $('#go_to_show').click(function() {
 
 })
 
+/************** Register **************/
 $('#reg_ok').click(function(e) {
     e.preventDefault()
     var repeat_acc = false
-
     if ($('#reg_acc').val() == "" || $('#reg_pwd').val() == "") {
         $('#reg_err').remove()
         $('<p id = "reg_err" style = "color:red;">帳號或密碼不得為空</p>').insertBefore('#reg_form')
@@ -187,3 +191,18 @@ $('#reg_ok').click(function(e) {
         })
     }
 })
+
+/************** Prevent attack **************/
+
+function escapeHTML(data) {
+    var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039'
+    };
+
+    return data.replace(/[&<>"']/g, function(m) {return map[m];})
+}
+

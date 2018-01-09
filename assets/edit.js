@@ -115,7 +115,7 @@ function show_count(e, str) {
             else if (str == 'hide')
                 cb_count.items[i].count--
         
-        var get_item =  $("#"+ cb_count.items[i].use_id + cb_count.items[i].buy_id +"")
+        var get_item =  $("#"+ cb_count.items[i].use_id + cb_count.items[i].buy_id + cb_count.items[i].buy_num +"")
         
         if (cb_count.items[i].count == 2) {
             get_item.show()
@@ -215,7 +215,8 @@ function update_report() {
                     database.ref('users/' + c + '/' + year + '/' + number + '/報表').once('value').then (
                         function(snapshot) {
                             snapshot.forEach(function(snap) {
-                                $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val()['請購編號'] +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ snap.val()['建檔日期'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購編號'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['實施主軸'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購類別'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購項目'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購金額'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['傳票號碼'] +'</td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ snap.val()['請購編號'] +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
+                                $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val()['實施主軸'] + snap.val()['請購類別'] + snap.val()['請購編號'] +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ snap.val()['建檔日期'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購編號'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['實施主軸'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購類別'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購項目'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購金額'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['傳票號碼'] +'</td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ snap.val()['實施主軸'] + snap.val()['請購類別'] + snap.val()['請購編號'] +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
+                                cb_count.items.push({use_id: snap.val()['實施主軸'], buy_id: snap.val()['請購類別'], buy_num: snap.val()['請購編號'], count: 2})
                             })
                         }
                     )
@@ -253,7 +254,7 @@ function update_usecb() {
                 })
                 database.ref('/請購類別').once('value').then(function(buy) {
                     buy.forEach(function(b) {
-                        cb_count.items.push({use_id: snap.val(), buy_id: b.val(), count: 2})
+                       // cb_count.items.push({use_id: snap.val(), buy_id: b.val(), count: 2})
                     })
                 })
             })

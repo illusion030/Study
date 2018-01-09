@@ -46,15 +46,20 @@
                             設定日期範圍
                         </div>
                         <form id = "date_form" class = "ui form">
-                            <label class = "ui large label"> 開始日期: </label>
-                            <input type = "text" id = "start_date" placeholder = "start date" readonly>
-                            <br>
-                            <br>
-                            <label class = "ui large label"> 結束日期: </label>
-                            <input type = "text" id = "end_date" placeholder = "end date" readonly>
-                            <br>
-                            <br>
-                            <button type = "button" class = "ui button" id = "clr_btn"> 清空 </button>
+                            <div class = "field">
+                                <label class = "ui large label"> 開始日期: </label>
+                                <input type = "text" id = "start_date" placeholder = "start date" readonly>
+                            </div>
+                            <div class = "field">
+                                <label class = "ui large label"> 結束日期: </label>
+                                <input type = "text" id = "end_date" placeholder = "end date" readonly>
+                            </div>
+                            <div class = "ui fluid blue basic animated vertical button" id = "clr_btn"> 
+                                <div class = "visible content"> 清空 </div>
+                                <div class = "hidden content">
+                                    <i class = "refresh icon"></i>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class = 'ui segment' id = 'use_seg'></div>
