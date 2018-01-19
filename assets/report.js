@@ -1,11 +1,11 @@
 // Initialize Firebase
 var config = {
-    apiKey: "AIzaSyBFGPR8vup0avlwXWn7P0p--ucM9JOz_Is",
-    authDomain: "study-c1f03.firebaseapp.com",
-    databaseURL: "https://study-c1f03.firebaseio.com",
-    projectId: "study-c1f03",
-    storageBucket: "study-c1f03.appspot.com",
-    messagingSenderId: "1098207976094"
+    apiKey: "AIzaSyBU_I-ktYmDZYAZVV5B47Ki6pYTKA0yrB8",
+    authDomain: "reportsys-30221.firebaseapp.com",
+    databaseURL: "https://reportsys-30221.firebaseio.com",
+    projectId: "reportsys-30221",
+    storageBucket: "",
+    messagingSenderId: "654646484556"
 };
 firebase.initializeApp(config);
 
@@ -181,22 +181,20 @@ $('#report_ok').click(function(e){
         users.forEach(function(u) {
             if (user == u.val()['account']) {
                 c = user_count
-                database.ref('/users/'+ c +'/報表').once('value').then (
+                database.ref('/users/'+ c + '/' + year + '/' + number + '/報表').once('value').then (
                     function(snapshot) {
                         var count = snapshot.numChildren()+1
                         var updates = {}
                         var data = {
                             '建檔日期':$('#report_date').val(),
                             '請購編號':$('#buy_num').val(),
-                            '年度':$('#year_title').dropdown('get value'),
-                            '會編':$('#number_title').dropdown('get value'),
                             '實施主軸':$('#use_title').dropdown('get value'),
                             '請購類別':$('#buy_type').dropdown('get value'),
                             '請購項目':$('#buy_name').val(),
                             '請購金額':$('#buy_money').val(),
                             '傳票號碼':$('#ticket_num').val()
                         }
-                        updates['/users/'+ c +'/報表/'+ count] = data
+                        updates['/users/'+ c + '/' + year + '/' + number + '/報表/'+ count] = data
                         database.ref().update(updates).then(function() {
                             $('#report_date').datepicker('setDate', new Date())
                             $('#buy_num').val('')
