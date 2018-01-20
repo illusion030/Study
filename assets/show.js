@@ -1,11 +1,21 @@
 // Initialize Firebase
-var config = {
+/*var config = {
     apiKey: "AIzaSyBU_I-ktYmDZYAZVV5B47Ki6pYTKA0yrB8",
     authDomain: "reportsys-30221.firebaseapp.com",
     databaseURL: "https://reportsys-30221.firebaseio.com",
     projectId: "reportsys-30221",
     storageBucket: "",
     messagingSenderId: "654646484556"
+};*/
+
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyBFGPR8vup0avlwXWn7P0p--ucM9JOz_Is",
+    authDomain: "study-c1f03.firebaseapp.com",
+    databaseURL: "https://study-c1f03.firebaseio.com",
+    projectId: "study-c1f03",
+    storageBucket: "study-c1f03.appspot.com",
+    messagingSenderId: "1098207976094"
 };
 firebase.initializeApp(config);
 
@@ -184,27 +194,21 @@ function update_report() {
 
     if (year != "" && number != "") {
         $('#load_edit').show()
-        database.ref('/users').once('value').then(function(users) {
-            user_count = 1
-            users.forEach(function(u) {
-                if (user == u.val()['account']) {
-                    c = user_count
-                    database.ref('users/' + c + '/' + year + '/' + number + '/報表').once('value').then (
-                        function(snapshot) {
-                            snapshot.forEach(function(snap) {
-                                $('#report_table tr:contains("'+ snap.val()['實施主軸'] +'")').after('<tr id = "'+ snap.val()['實施主軸'] + snap.val()['請購類別']+'"><td>'+ snap.val()['建檔日期'] +'</td><td>'+ snap.val()['請購編號'] +'</td><td>'+ snap.val()['請購類別'] +'</td><td>'+ snap.val()['請購項目'] +'</td><td>'+ snap.val()['請購金額'] +'</td><td>'+ snap.val()['傳票號碼'] +'</td></tr>')
-                            })
-                        }
-                    )
-                }
-                user_count++
-            })
-            $('#start_date').val('')
-            $('#end_date').val('')
-            $('.checkbox').checkbox('check')
-            $('#load_show').hide()
-        })
+        database.ref('報表/' + year + '/' + number).once('value').then (
+            function(snapshot) {
+                snapshot.forEach(function(snap) {
+                    $('#report_table tr:contains("'+ snap.val()['實施主軸'] +'")').after('<tr id = "'+ snap.val()['實施主軸'] + snap.val()['請購類別']+'"><td>'+ snap.val()['建檔日期'] +'</td><td>'+ snap.val()['請購編號'] +'</td><td>'+ snap.val()['請購類別'] +'</td><td>'+ snap.val()['請購項目'] +'</td><td>'+ snap.val()['請購金額'] +'</td><td>'+ snap.val()['傳票號碼'] +'</td></tr>')
+                    var new_money = snap.val()['請購金額'].split('$')
+                    var total_money = parseInt($('#money' + snap.val()['實施主軸'] + '').text(), 10) + parseInt(new_money[1], 10)
+                    $('#money' + snap.val()['實施主軸'] + '').html(total_money)
+                })
+            }
+        )
     }
+    $('#start_date').val('')
+    $('#end_date').val('')
+    $('.checkbox').checkbox('check')
+    $('#load_show').hide()
 }
 
 function update_usecb() {
@@ -220,6 +224,7 @@ function update_usecb() {
             snapshot.forEach(function(snap) {
                 $('#use_seg').append ("<div class = 'ui checkbox' id = 'cb"+ snap.val() +"'><input type = 'checkbox' checked = ''><label>" + snap.val() + "</label></div><br>")
                 $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val() +'" class = "print_tr"><td colspan = "6" align = "center">'+ snap.val() +'</td></tr>')
+                $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val() + '"><td colspan = "4" align = "center"></td><td>NT$<p id = "money' + snap.val() + '" style = "display:inline">0</p></td><td></td></tr>')
                 $('#cb'+ snap.val()).checkbox({
                     onChecked: function() {
                         show_count($(this.nextSibling.firstChild)[0].textContent, 'show')

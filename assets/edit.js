@@ -1,11 +1,20 @@
 // Initialize Firebase
-var config = {
+/*var config = {
     apiKey: "AIzaSyBU_I-ktYmDZYAZVV5B47Ki6pYTKA0yrB8",
     authDomain: "reportsys-30221.firebaseapp.com",
     databaseURL: "https://reportsys-30221.firebaseio.com",
     projectId: "reportsys-30221",
     storageBucket: "",
     messagingSenderId: "654646484556"
+};*/
+
+var config = {
+    apiKey: "AIzaSyBFGPR8vup0avlwXWn7P0p--ucM9JOz_Is",
+    authDomain: "study-c1f03.firebaseapp.com",
+    databaseURL: "https://study-c1f03.firebaseio.com",
+    projectId: "study-c1f03",
+    storageBucket: "study-c1f03.appspot.com",
+    messagingSenderId: "1098207976094"
 };
 firebase.initializeApp(config);
 
@@ -207,29 +216,20 @@ function update_report() {
     
     if (year != "" && number != "") {
         $('#load_edit').show()
-        database.ref('/users').once('value').then(function(users) {
-            user_count = 1
-            users.forEach(function(u) {
-                if (user == u.val()['account']) {
-                    var c = user_count
-                    database.ref('users/' + c + '/' + year + '/' + number + '/報表').once('value').then (
-                        function(snapshot) {
-                            snapshot.forEach(function(snap) {
-                                $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val()['實施主軸'] + snap.val()['請購類別'] + snap.val()['請購編號'] +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ snap.val()['建檔日期'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購編號'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['實施主軸'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購類別'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購項目'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購金額'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['傳票號碼'] +'</td><td class = "single line"><div class = "ui red basic animated button" onclick = "remove_edit(\''+ snap.val()['實施主軸'] + snap.val()['請購類別'] + snap.val()['請購編號'] +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
-                                cb_count.items.push({use_id: snap.val()['實施主軸'], buy_id: snap.val()['請購類別'], buy_num: snap.val()['請購編號'], count: 2})
-                            })
-                        }
-                    )
-                }
-                user_count++
-            })
-            $('#start_date').val('')
-            $('#end_date').val('')
-            $('.checkbox').checkbox('check')
-            $('#not_filled_cb').checkbox('uncheck')
-            is_changed = false
-            $('#load_edit').hide()
-        })
+        database.ref('報表/' + year + '/' + number).once('value').then (
+            function(snapshot) {
+                snapshot.forEach(function(snap) {
+                    $('#report_table > tbody:last-child').append('<tr id = "'+ snap.val()['實施主軸'] + snap.val()['請購類別'] + snap.val()['請購編號'] +'"><td contenteditable="true" oninput = "edit_change()" class = "date">'+ snap.val()['建檔日期'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購編號'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['實施主軸'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購類別'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購項目'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['請購金額'] +'</td><td contenteditable="true" oninput = "edit_change()">'+ snap.val()['傳票號碼'] +'</td><td class = "single line"><div class = "ui red basic animated button" onclick = "remove_edit(\''+ snap.val()['實施主軸'] + snap.val()['請購類別'] + snap.val()['請購編號'] +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
+                    cb_count.items.push({use_id: snap.val()['實施主軸'], buy_id: snap.val()['請購類別'], buy_num: snap.val()['請購編號'], count: 2})
+                })
+            }
+        )
+        $('#start_date').val('')
+        $('#end_date').val('')
+        $('.checkbox').checkbox('check')
+        $('#not_filled_cb').checkbox('uncheck')
+        is_changed = false
+        $('#load_edit').hide()
     }
 }
 
@@ -313,26 +313,17 @@ $('.ui.ok.button').click(function(e) {
     })
 
     $('#load_edit').show()
-    database.ref('/users').once('value').then(function(users) {
-        user_count = 1
-        users.forEach(function(u) {
-            if (user == u.val()['account']) {
-                var c = user_count
-                updates['users/'+ c + '/' + year + '/' + number + '/報表'] = data
-                database.ref().update(updates).then(function() {
-                    is_changed = false
-                    $('#load_edit').hide()
-                    $('#success').modal('show')
-                    update_report()
-                }).catch(function(err) {
-                    console.log('Edit failed.' + err)
-                    is_changed = false
-                    $('#load_edit').hide()
-                    $('#failed').modal('show')
-                })
-            }
-            user_count++
-        })
+    updates['報表/'+ year + '/' + number] = data
+    database.ref().update(updates).then(function() {
+        is_changed = false
+        $('#load_edit').hide()
+        $('#success').modal('show')
+        update_report()
+    }).catch(function(err) {
+    console.log('Edit failed.' + err)
+        is_changed = false
+        $('#load_edit').hide()
+        $('#failed').modal('show')
     })
 })
 

@@ -41,6 +41,7 @@
                         <th> 編號 </th>
                         <th> 帳號 </th>
                         <th> 是否為管理員 </th>
+                        <th> 管理會編 </th>
                         <th> 刪除 </th>
                     </tr>
                 </thead>
@@ -80,7 +81,7 @@
                 <p>請確認資料正確，存檔後無法復原。</p>
             </div>
             <div class = "actions">
-                <div class = "ui large green basic animated vertical ok button">
+                <div class = "ui large green basic animated vertical ok button" id = "edit_ok">
                     <div class = "visible content"> 是 </div>
                     <div class = "hidden content">
                         <i class = "checkmark icon"></i>
@@ -116,6 +117,99 @@
             <div class = "ui icon header">
                 <i class = "info icon"></i>
                 沒有資料需要更新
+            </div>
+        </div>
+        
+        <!-- number
+        ====================================-->
+        
+        <div class = "ui modal" id = "number_modal">
+            <i class = "close icon"></i>
+            <div class = "ui icon header">
+                <i class = "edit icon"></i>
+                編輯
+            </div>
+            <div class = "content">
+                <p> 修改後請存檔 </p>
+            </div>
+            <div class = "ui segment">
+                <div class = "ui top left attached large label">
+                    帳號可使用會編
+                </div>
+                <table id = "user_table" class = "ui fixed table">
+                    <thead>
+                        <tr>
+                            <th class = "four wide"> 年度 </th>
+                            <th class = "seven wide"> 會編 </th>
+                            <th class = "four wide"> 動作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class = "ui segment">
+                <div class = "ui top left attached large label">
+                    所有會編
+                </div>
+                <table id = "number_table" class = "ui fixed table">
+                    <thead>
+                        <tr>
+                            <th class = "four wide"> 年度 </th>
+                            <th class = "seven wide"> 會編 </th>
+                            <th class = "four wide"> 動作 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class = "ui input">
+                <input type = "text" id = "add_number_input" placeholder = "Add item..." style = "width:500px">
+                <div class = "ui blue basic animated button" id = "add_number">
+                    <div class = "visible content"> 加入 </div>
+                    <div class = "hidden content">
+                        <i class = "add icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class = "actions">
+                <div class = "ui green basic ok animated vertical button" id = "number_save">
+                    <div class = "visible content"> 存檔 </div>
+                    <div class = "hidden content">
+                        <i class = "save icon"></i>
+                    </div>
+                </div>
+                <div class = "ui red basic cancel animated vertical button" id = "number_close">
+                    <div class = "visible content"> 關閉 </div>
+                    <div class = "hidden content">
+                        <i class = "remove icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class = "ui modal" id = "check_number">
+            <i class = "close icon"></i>
+            <div class = "ui icon header">
+                <i class = "save icon"></i>
+                確認存檔
+            </div>
+            <div class = "content">
+                <p> 確定存檔? </p>
+            </div>
+            <div class = "actions">
+                <div class = "ui large green basic ok animated vertical button" id = "number_ok">
+                    <div class = "visible content"> 是 </div>
+                    <div class = "hidden content">
+                        <i class = "checkmark icon"></i>
+                    </div>
+                </div>
+                <div class = "ui large red basic cancel animated vertical button" id = "number_cancel">
+                    <div class = "visible content"> 否 </div>
+                    <div class = "hidden content">
+                        <i class = "remove icon"></i>
+                    </div>
+                </div>
             </div>
         </div>
         <script src = "./assets/admin.js"></script>

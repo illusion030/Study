@@ -1,11 +1,21 @@
 // Initialize Firebase
-var config = {
+/*var config = {
     apiKey: "AIzaSyBU_I-ktYmDZYAZVV5B47Ki6pYTKA0yrB8",
     authDomain: "reportsys-30221.firebaseapp.com",
     databaseURL: "https://reportsys-30221.firebaseio.com",
     projectId: "reportsys-30221",
     storageBucket: "",
     messagingSenderId: "654646484556"
+};*/
+
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyBFGPR8vup0avlwXWn7P0p--ucM9JOz_Is",
+    authDomain: "study-c1f03.firebaseapp.com",
+    databaseURL: "https://study-c1f03.firebaseio.com",
+    projectId: "study-c1f03",
+    storageBucket: "study-c1f03.appspot.com",
+    messagingSenderId: "1098207976094"
 };
 firebase.initializeApp(config);
 
@@ -181,7 +191,7 @@ $('#report_ok').click(function(e){
         users.forEach(function(u) {
             if (user == u.val()['account']) {
                 c = user_count
-                database.ref('/users/'+ c + '/' + year + '/' + number + '/報表').once('value').then (
+                database.ref('/報表/' + year + '/' + number).once('value').then (
                     function(snapshot) {
                         var count = snapshot.numChildren()+1
                         var updates = {}
@@ -194,7 +204,7 @@ $('#report_ok').click(function(e){
                             '請購金額':$('#buy_money').val(),
                             '傳票號碼':$('#ticket_num').val()
                         }
-                        updates['/users/'+ c + '/' + year + '/' + number + '/報表/'+ count] = data
+                        updates['/報表/' + year + '/' + number + '/'+ count] = data
                         database.ref().update(updates).then(function() {
                             $('#report_date').datepicker('setDate', new Date())
                             $('#buy_num').val('')
