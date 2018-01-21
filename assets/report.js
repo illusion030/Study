@@ -24,6 +24,7 @@ var user = getCookie('account')
 var user_count
 var year = ""
 var number = ""
+var account_n = 0
 
 /**********  Report  **********/
 
@@ -74,6 +75,7 @@ function check_account() {
         users.forEach(function(u) {
             if (user == u.val()['account']) {
                 c = user_count
+                account_n = c
                 database.ref('/users/'+ c +'/admin').once('value').then (
                     function(snapshot) {
                         if (snapshot.val()) {
@@ -81,6 +83,7 @@ function check_account() {
                         }
                     }
                 )
+                update_year()
             }
             user_count++
         })
@@ -91,13 +94,12 @@ function check_account() {
 function update_year() {
     $('#load_report').show()
     $('#year_menu').empty()
-    database.ref('/年度').once('value').then (
+    if (account_n != 0) {
+    database.ref('/users/' + account_n + '/會編').once('value').then (
         function(snapshot) {
-            var i = 1
-            while (snapshot.val()[i]) {
-                $("#year_title").find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i]  + "</div>");
-                i++
-            }
+            $.each(snapshot.toJSON(), function(key, value) {
+                $("#year_title").find('.menu').append("<div class = 'item' data-value = '" + key + "'>" + key  + "</div>");
+            })
             $('#year_title').dropdown({
                 onChange: function() {
                     year = $('#year_title').dropdown('get value')
@@ -110,6 +112,7 @@ function update_year() {
             $('#load_report').hide()
         }
     )
+    }
 }
 
 function update_number() {
@@ -118,13 +121,11 @@ function update_number() {
     
     if (year != "") {
         $('#load_report').show()
-        database.ref('/會編/' + year).once('value').then (
+        database.ref('/users/' + account_n + '/會編/' + year).once('value').then (
             function(snapshot) {
-                var i = 1
                 if (snapshot.val()) {
-                    while (snapshot.val()[i]) {
+                    for (i in snapshot.val()) {
                         $("#number_title").find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i]  + "</div>");
-                        i++
                     }
                 }
                 $('#number_title').dropdown({

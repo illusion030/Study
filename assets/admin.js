@@ -25,6 +25,8 @@ var is_changed = false
 var user = getCookie('account')
 var user_count
 var remove_num = []
+var year = ""
+var n = ""
 
 $(document).ready(function() {
     if (!user) {
@@ -32,6 +34,8 @@ $(document).ready(function() {
         window.location = './index.html'
     } else {
         check_account()
+        update_year()
+        update_n()
     }
 })
 
@@ -131,6 +135,55 @@ function update_account() {
         $('#load_admin').hide()
     })
 }
+function update_year() {
+    $('#load_admin').show()
+    $('#year_menu').empty()
+    database.ref('/年度').once('value').then (
+        function(snapshot) {
+            var i = 1
+            while (snapshot.val()[i]) {
+                $("#year_title").find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i]  + "</div>");
+                i++
+            }
+            $('#year_title').dropdown({
+                onChange: function() {
+                    year = $('#year_title').dropdown('get value')
+                    $('#n_title').dropdown('clear')
+                    n = ""
+                    update_n()
+                }
+            })
+            $('#load_admin').hide()
+        }
+    )
+}
+
+function update_n() {    
+    $('#n_menu').empty()
+    
+    if (year != "") {
+        $('#load_admin').show()
+        database.ref('/會編/' + year).once('value').then (
+            function(snapshot) {
+                var i = 1
+                if (snapshot.val()) {
+                    while (snapshot.val()[i]) {
+                        $("#n_title").find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i]  + "</div>");
+                        i++
+                    }
+                }
+                $('#n_title').dropdown({
+                    onChange: function() {
+                        n = $('#n_title').dropdown('get value')
+                    }
+                })
+                $('#load_admin').hide()
+            }
+        )
+    } else
+        $('#load_admin').hide()
+}
+
 
 /******** Edit ********************/
 
@@ -221,36 +274,30 @@ function edit_number(user_num) {
     user_number = user_num
     $('#user_table > tbody').empty()
     $('#number_table > tbody').empty()
-    database.ref('/users/' + user_num).once('value').then (function(snapshot) {
-        i = 1
-        if (snapshot.val()) {
-            for (var y in snapshot.val()['會編']) {
-                j = 1
-                while (snapshot.val()['會編'][y][j]) {
-                    $("#user_table > tbody:last-child").append('<tr id = "'+ snapshot.val()['會編'][y][j] +'"><td>' + y + '</td><td>'+ snapshot.val()['會編'][y][j] +'</td><td><div class = "ui buttons"><div class = "ui green basic animated vertical button" onclick = "button_move(this)"><div class = "visible content">移動</div><div class = "hidden content"><i class = "exchange large icon"></i></div></div><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ snapshot.val()['會編'][y][j] +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
-                    has_insert[insert_count] = snapshot.val()['會編'][y][j]
-                    insert_count++
-                    j++
-                }
-            }
-        }
         database.ref('/年度').once('value').then (function(snapshot) {
             snapshot.forEach(function(snap) {
                 database.ref('/會編/' + snap.val()).once('value').then(function(s) {
                     s.forEach(function(num) {
-                        flag = 0
-                        for (i = 0; i < insert_count; i++) {
-                            if (has_insert[i] == num.val())
-                                flag = 1
-                        }
-                        if (!flag)
-                            $("#number_table > tbody:last-child").append('<tr id = "'+ num.val() +'"><td>' + snap.val() + '</td><td>'+ num.val() +'</td><td><div class = "ui buttons"><div class = "ui green basic animated vertical button" onclick = "button_move(this)"><div class = "visible content">移動</div><div class = "hidden content"><i class = "exchange large icon"></i></div></div><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ num.val() +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
+                            has_insert.push(num.val())
+                            $("#number_table > tbody:last-child").append('<tr id = "all'+ num.val() +'"><td>' + snap.val() + '</td><td>'+ num.val() +'</td><td><div class = "ui buttons"><div class = "ui green basic animated vertical button" onclick = "button_move(this)"><div class = "visible content">移動</div><div class = "hidden content"><i class = "exchange large icon"></i></div></div></div></td></tr>')
                     })
                 })
             })
+    database.ref('/users/' + user_num).once('value').then (function(snapshot) {
+        i = 1
+        if (snapshot.val()) {
+            for (var y in snapshot.val()['會編']) {
+                for (j in snapshot.val()['會編'][y]) {
+                    if (has_insert.includes(snapshot.val()['會編'][y][j])) {
+                        $("#user_table > tbody:last-child").append('<tr id = "'+ snapshot.val()['會編'][y][j] +'"><td>' + y + '</td><td>'+ snapshot.val()['會編'][y][j] +'</td><td><div class = "ui buttons"><div class = "ui green basic animated vertical button" onclick = "button_move(this)"><div class = "visible content">移動</div><div class = "hidden content"><i class = "exchange large icon"></i></div></div></div></td></tr>')
+                        $('#all' + snapshot.val()['會編'][y][j]).remove()
+                    }
+                }
+            }
+        }
         $('#number_modal').modal('show')
-        })
     })
+        })
 }
 
 $('#add_number').click(function(e) {
@@ -303,6 +350,7 @@ $('#number_ok').click(function(e){
                 eachdata[j] = c_array[i + 1 + j]
             }
             eachyear[c_array[i + 1]] = Object.assign({}, eachdata)
+            eachdata = []
         }
     }
     data['會編'] = eachyear
@@ -327,9 +375,6 @@ function remove_item(e) {
     $('#'+ e +'').remove()
 }
 
-/********************************************/
-
-
 $('#number_cancel').click(function(e){
     e.preventDefault()
     $('#number_modal').modal('show')
@@ -349,6 +394,162 @@ function button_move(e) {
         $('#number_table tbody').append(row)
     }
 }
+
+/***************  Edit year  *************************/
+
+$('#edit_year').click(function(e) {
+    
+    e.preventDefault()
+
+    $('#year_table > tbody').empty()
+
+    database.ref('/年度').once('value').then (
+        function(snapshot) {
+            var i = 1
+            while (snapshot.val()[i]) {
+                $("#year_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><div class = "ui buttons"><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ snapshot.val()[i] +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
+                i++
+            }
+            $('#year_modal').modal('show')
+        }
+    )
+    
+})
+
+$('#add_year').click(function(e) {
+    e.preventDefault()
+    var item = $('#add_year_input').val()
+    
+    if (item) { 
+        $("#year_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable = "true">'+ item +'</td><td><div class = "ui buttons"><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ item +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
+        $('#add_year_input').val('')
+    }
+})
+
+$('#year_save').click(function(e) {
+    e.preventDefault()
+    $('#check_year').modal('show')
+})
+
+$('#year_ok').click(function(e){
+      e.preventDefault()
+      
+      var i = 1
+      var updates = {}
+      var data = {}
+
+      $('#year_table > tbody > tr > td:first-child').each(function(i, item) {
+          data[i+1] = item.innerHTML
+      })
+      updates['/年度'] = data
+      database.ref().update(updates).then(function() {
+          update_year()
+          $('#success').modal('show')
+      }).catch(function(err) {
+          console.log('Save failed.' + err)
+          $('#failed').modal('show')
+      })
+})
+
+$('#year_cancel').click(function(e){
+      e.preventDefault()
+      $('#year_modal').modal('show')
+})
+
+$('#year_close').click(function(e){
+      e.preventDefault()
+      $('#year_modal').modal('hide')
+})
+
+/*****************************************************/
+/***************  Edit n  **************************/
+
+$('#edit_n').click(function(e) {
+    
+    e.preventDefault()
+
+    $('#n_table > tbody').empty()
+    if (year != "") {
+        database.ref('/會編/' + year).once('value').then (
+            function(snapshot) {
+                var i = 1
+                if (snapshot.val()) {
+                    while (snapshot.val()[i]) {
+                        $("#n_table > tbody:last-child").append('<tr id = "'+ snapshot.val()[i] +'"><td contenteditable = "true">'+ snapshot.val()[i] +'</td><td><div class = "ui buttons"><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ snapshot.val()[i] +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
+                        i++
+                    }
+                }
+                $('#n_modal').modal('show')
+            }
+        )
+    }
+    
+})
+
+$('#add_n').click(function(e) {
+    e.preventDefault()
+    var item = $('#add_n_input').val()
+    
+    if (item) { 
+        $("#n_table > tbody:last-child").append('<tr id = "'+ item +'"><td contenteditable = "true">'+ item +'</td><td><div class = "ui buttons"><div class = "ui red basic animated vertical button" onclick = "remove_item(\''+ item +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></div></td></tr>')
+        $('#add_n_input').val('')
+    }
+})
+
+$('#n_save').click(function(e) {
+    e.preventDefault()
+    $('#check_n').modal('show')
+})
+
+$('#n_ok').click(function(e){
+      e.preventDefault()
+      
+      var i = 1
+      var updates = {}
+      var data = {}
+      var all_num = []
+      $('#load_admin').show()
+
+      $('#n_table > tbody > tr > td:first-child').each(function(i, item) {
+          data[i+1] = item.innerHTML
+          all_num.push(item.innerHTML)
+      })
+      database.ref('/users').once('value').then(function(snapshot){
+          u = 1
+          snapshot.forEach(function(snap) {
+              if (snap.val()['會編']) {
+                  if (snap.val()['會編'][year]) {
+                      for(s in snap.val()['會編'][year]) {
+                          if (!all_num.includes(snap.val()['會編'][year][s])) {
+                          console.log(snap.val()['會編'][year][s])
+                              database.ref('/users/' + u + '/會編/' + year + '/' + s).remove()
+                          }
+                      }
+                  }
+              }
+              u++
+          })
+      })
+      updates['/會編/' + year] = data
+      database.ref().update(updates).then(function() {
+          update_n()
+          $('#success').modal('show')
+          $('#load_admin').hide()
+      }).catch(function(err) {
+          console.log('Save failed.' + err)
+          $('#failed').modal('show')
+      })
+})
+
+$('#n_cancel').click(function(e){
+      e.preventDefault()
+      $('#n_modal').modal('show')
+})
+
+$('#n_close').click(function(e){
+      e.preventDefault()
+      $('#n_modal').modal('hide')
+})
 
 /******** Prevent attack ********************/
 

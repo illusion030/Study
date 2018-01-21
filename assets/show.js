@@ -23,8 +23,9 @@ var database = firebase.database();
 var user = getCookie('account')
 var user_count
 var cb_count = {items: []}
-var year
-var number
+var year = ""
+var number = ""
+var account_n = 0
 
 $(document).ready(function(){
     if (!user) {
@@ -68,6 +69,7 @@ function check_account() {
         users.forEach(function(u) {
             if (user == u.val()['account']) {
                 c = user_count
+                account_n = c
                 database.ref('/users/'+ c +'/admin').once('value').then (
                     function(snapshot) {
                         if (snapshot.val()) {
@@ -75,6 +77,7 @@ function check_account() {
                         }
                     }
                 )
+                update_year()
             }
             user_count++
         })
@@ -145,22 +148,25 @@ function show_count(e, str) {
 function update_year() {
     $('#load_show').show()
     $('#year_menu').empty()
-    database.ref('/年度').once('value').then (function(snapshot) {
-        var i = 1
-        while (snapshot.val()[i]) {
-            $('#year_drop').find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i] + "</div>")
-            i++
+    
+    if (account_n != 0) {
+    database.ref('/users/' + account_n + '/會編').once('value').then (
+        function(snapshot) {
+            $.each(snapshot.toJSON(), function(key, value) {
+                $("#year_drop").find('.menu').append("<div class = 'item' data-value = '" + key + "'>" + key  + "</div>");
+            })
+            $('#year_drop').dropdown({
+                onChange: function() {
+                    year = $('#year_drop').dropdown('get value')
+                    $('#number_drop').dropdown('clear')
+                    number = ""
+                    update_number()
+                }
+            })
+            $('#load_show').hide()
         }
-        $('#year_drop').dropdown({
-            onChange: function() {
-                year = $('#year_drop').dropdown('get value')
-                $('#number_drop').dropdown('clear')
-                number = ""
-                update_number()
-            }
-        })
-        $('#load_show').hide()
-    })
+    )
+    }
 }
 
 function update_number() {
@@ -168,10 +174,10 @@ function update_number() {
 
     if (year != "") {
         $('#load_show').show()
-        database.ref('/會編/' + year).once('value').then (function(snapshot) {
-            var i = 1
-            if (snapshot.val()[i]) {
-                while (snapshot.val()[i]) {
+        database.ref('/users/' + account_n + '/會編/' + year).once('value').then (function(snapshot) {
+            
+            if (snapshot.val()) {
+                for (i in snapshot.val()) {
                     $('#number_drop').find('.menu').append("<div class = 'item' data-value = '" + snapshot.val()[i] + "'>" + snapshot.val()[i] + "</div>")
                     i++
                 }
