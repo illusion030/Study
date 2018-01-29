@@ -81,7 +81,7 @@ function update_account() {
         c = 1
         users.forEach(function(u) {
             if (u.val()['admin'] == 1) {
-                $('#account_table > tbody:last-child').append('<tr id = "user'+ c +'"><td>'+ c +'</td><td>'+ escapeHTML(u.val()['account']) +'</td><td><div class = "ui selection dropdown" id = "drop' + u.val()['account'] + '"><input type = "hidden" id = "admin"><i class = "dropdown icon"></i><div class = "default text">是</div></div></td><td><div class = "ui blue basic animated button" onclick = "edit_number(\''+ c +'\')"><div class = "visible content">修改</div><div class = "hidden content"><i class = "large edit icon"></i></div></div></td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ c +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
+                $('#account_table > tbody:last-child').append('<tr id = "user'+ c +'"><td>'+ c +'</td><td>'+ escapeHTML(u.val()['account']) +'</td><td contenteditable = "true" oninput = "edit_change()">'+ u.val()['pwd'] +'</td><td><div class = "ui selection dropdown" id = "drop' + u.val()['account'] + '"><input type = "hidden" id = "admin"><i class = "dropdown icon"></i><div class = "default text">是</div></div></td><td><div class = "ui blue basic animated button" onclick = "edit_number(\''+ c +'\')"><div class = "visible content">修改</div><div class = "hidden content"><i class = "large edit icon"></i></div></div></td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ c +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
                 $('#drop' + u.val()['account']).dropdown({
                     onChange: function() {
                         is_changed = true
@@ -100,7 +100,7 @@ function update_account() {
                 })
             }
             else {
-                $('#account_table > tbody:last-child').append('<tr id = "user'+ c +'"><td>'+ c +'</td><td>'+ escapeHTML(u.val()['account']) +'</td><td><div class = "ui selection dropdown" id = "drop' + u.val()['account'] + '"><input type = "hidden" id = "admin"><i class = "dropdown icon"></i><div class = "default text">否</div></div></td><td><div class = "ui blue basic animated button" onclick = "edit_number(\''+ c +'\')"><div class = "visible content">修改</div><div class = "hidden content"><i class = "large edit icon"></i></div></div></td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ c +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
+                $('#account_table > tbody:last-child').append('<tr id = "user'+ c +'"><td>'+ c +'</td><td>'+ escapeHTML(u.val()['account']) +'</td><td contenteditable = "true" oninput = "edit_change()">'+ u.val()['pwd'] +'</td><td><div class = "ui selection dropdown" id = "drop' + u.val()['account'] + '"><input type = "hidden" id = "admin"><i class = "dropdown icon"></i><div class = "default text">否</div></div></td><td><div class = "ui blue basic animated button" onclick = "edit_number(\''+ c +'\')"><div class = "visible content">修改</div><div class = "hidden content"><i class = "large edit icon"></i></div></div></td><td><div class = "ui red basic animated button" onclick = "remove_edit(\''+ c +'\')"><div class = "visible content">刪除</div><div class = "hidden content"><i class = "remove circle outline large red icon"></i></div></div></td></tr>')
                 $('#drop' + u.val()['account']).dropdown({
                     onChange: function() {
                         is_changed = true
@@ -193,7 +193,7 @@ $('#edit_refresh').click(function(e) {
     update_account()
 })
 
-$('edit_ok').click(function(e) {
+$('#edit_ok').click(function(e) {
 
     var i = 1
     var updates = {}
@@ -224,9 +224,11 @@ $('edit_ok').click(function(e) {
         $('#account_table > tbody > tr').each(function(i, item) {
             if ($('#drop'+item.cells[1].innerHTML).dropdown('get value') == '是') {
                 each_users[c]['account'] = item.cells[1].innerHTML
+                each_users[c]['pwd'] = item.cells[2].innerHTML
                 each_users[c]['admin'] = 1
             } else {
                 each_users[c]['account'] = item.cells[1].innerHTML
+                each_users[c]['pwd'] = item.cells[2].innerHTML
                 each_users[c]['admin'] = 0
             }
             c++
